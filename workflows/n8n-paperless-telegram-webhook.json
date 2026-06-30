@@ -19,14 +19,39 @@
     },
     {
       "parameters": {
-        "chatId": "YOUR_CHAT_ID",
-        "text": "=Neues Dokument wurde verarbeitet.\n\nDokument-ID: {{$json.body.document_id}}\nStatus: {{$json.body.status}}\nHinweis: {{$json.body.message}}",
-        "additionalFields": {}
+        "url": "={{ \"http://webserver:8000/api/documents/\" + $json.body.document_id + \"/\" }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token YOUR_PAPERLESS_API_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        176,
+        0
+      ],
+      "id": "HTTP_REQUEST_NODE_ID",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=✅ Neues Dokument verarbeitet\n\nDokument-ID: {{$json.id}}\nTitel: {{$json.title}}\n\nDokumenttyp-ID: {{$json.document_type}}\nKorrespondent-ID: {{$json.correspondent}}\n\nPaperless:\nhttp://YOUR_PAPERLESS_HOST/documents/{{$json.id}}/details\n\nStatus:\nCustom Fields wurden automatisch befüllt.\n",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        208,
+        352,
         0
       ],
       "id": "TELEGRAM_NODE_ID",
@@ -43,6 +68,17 @@
   "pinData": {},
   "connections": {
     "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
       "main": [
         [
           {
