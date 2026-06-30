@@ -1,0 +1,71 @@
+{
+  "name": "Paperless n8n Telegram Webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "paperless-ai-custom-fields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "WEBHOOK_NODE_ID",
+      "name": "Webhook",
+      "webhookId": "WEBHOOK_ID_PLACEHOLDER"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_CHAT_ID",
+        "text": "=Neues Dokument wurde verarbeitet.\n\nDokument-ID: {{$json.body.document_id}}\nStatus: {{$json.body.status}}\nHinweis: {{$json.body.message}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "TELEGRAM_NODE_ID",
+      "name": "Send Telegram Message",
+      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "VERSION_ID_PLACEHOLDER",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "N8N_INSTANCE_ID_PLACEHOLDER"
+  },
+  "nodeGroups": [],
+  "id": "WORKFLOW_ID_PLACEHOLDER",
+  "tags": []
+}
