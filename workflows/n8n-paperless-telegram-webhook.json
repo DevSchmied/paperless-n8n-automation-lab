@@ -43,7 +43,7 @@
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=✅ Neues Dokument verarbeitet\n\nDokument-ID: {{$json.id}}\nTitel: {{$json.title}}\n\nDokumenttyp-ID: {{$json.document_type}}\nKorrespondent-ID: {{$json.correspondent}}\n\nPaperless:\nhttp://YOUR_PAPERLESS_HOST/documents/{{$json.id}}/details\n\nStatus:\nCustom Fields wurden automatisch befüllt.\n",
+        "text": "=✅ Neues Dokument verarbeitet\n\nDokument-ID: {{$json.id}}\nTitel: {{$json.title}}\n\nDokumenttyp-ID: {{$json.document_type}}\nKorrespondent-ID: {{$json.correspondent || \"nicht gesetzt\"}}\n\nPaperless:\nhttp://YOUR_PAPERLESS_HOST/documents/{{$json.id}}/details\n\nStatus:\nCustom Fields wurden automatisch befüllt.\n",
         "additionalFields": {
           "parse_mode": "HTML"
         }
