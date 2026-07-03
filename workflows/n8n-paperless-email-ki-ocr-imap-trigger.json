@@ -55,6 +55,40 @@
       ],
       "id": "HAS_ATTACHMENT_IF_NODE_ID",
       "name": "Hat Anhang?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "IS_PDF_CONDITION_ID_PLACEHOLDER",
+              "leftValue": "={{ $binary.attachment_0.mimeType }}",
+              "rightValue": "application/pdf",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        432,
+        -16
+      ],
+      "id": "IS_PDF_IF_NODE_ID",
+      "name": "Ist PDF?"
     }
   ],
   "pinData": {},
@@ -64,6 +98,17 @@
         [
           {
             "node": "Hat Anhang?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hat Anhang?": {
+      "main": [
+        [
+          {
+            "node": "Ist PDF?",
             "type": "main",
             "index": 0
           }
