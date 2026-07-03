@@ -37,13 +37,70 @@
         176,
         0
       ],
-      "id": "HTTP_REQUEST_NODE_ID",
-      "name": "HTTP Request"
+      "id": "DOCUMENT_REQUEST_NODE_ID",
+      "name": "Dokument holen"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "IF_CONDITION_ID_PLACEHOLDER",
+              "leftValue": "={{ $json.correspondent ? $json.correspondent.toString() : \"\" }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        368,
+        0
+      ],
+      "id": "IF_NODE_ID",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "={{ \"http://webserver:8000/api/correspondents/\" + $json.correspondent + \"/\" }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Token YOUR_PAPERLESS_API_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        544,
+        -80
+      ],
+      "id": "CORRESPONDENT_REQUEST_NODE_ID",
+      "name": "Korrespondent holen"
     },
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=✅ Neues Dokument verarbeitet\n\nDokument-ID: {{$json.id}}\nTitel: {{$json.title}}\n\nDokumenttyp-ID: {{$json.document_type}}\nKorrespondent-ID: {{$json.correspondent || \"nicht gesetzt\"}}\n\nPaperless:\nhttp://YOUR_PAPERLESS_HOST/documents/{{$json.id}}/details\n\nStatus:\nCustom Fields wurden automatisch befüllt.\n",
+        "text": "=✅ Neues Dokument verarbeitet\n\nDokument-ID: {{$node[\"Dokument holen\"].json.id}}\nTitel: {{$node[\"Dokument holen\"].json.title}}\n\nDokumenttyp-ID: {{$node[\"Dokument holen\"].json.document_type || \"nicht gesetzt\"}}\nKorrespondent: {{$json.name || \"nicht gesetzt\"}}\n\nPaperless:\nhttp://YOUR_PAPERLESS_HOST/documents/{{$node[\"Dokument holen\"].json.id}}/details\n\nStatus:\nCustom Fields wurden automatisch befüllt.",
         "additionalFields": {
           "parse_mode": "HTML"
         }
@@ -51,8 +108,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        352,
-        0
+        720,
+        80
       ],
       "id": "TELEGRAM_NODE_ID",
       "name": "Send Telegram Message",
@@ -71,14 +128,43 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Dokument holen",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP Request": {
+    "Dokument holen": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Korrespondent holen",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Telegram Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Korrespondent holen": {
       "main": [
         [
           {
