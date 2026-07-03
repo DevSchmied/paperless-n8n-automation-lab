@@ -1,0 +1,46 @@
+{
+  "name": "paperless-email-ki-ocr",
+  "nodes": [
+    {
+      "parameters": {
+        "downloadAttachments": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "EMAIL_TRIGGER_IMAP_NODE_ID",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "YOUR_N8N_IMAP_CREDENTIAL_ID",
+          "name": "YOUR_N8N_IMAP_CREDENTIAL_NAME"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "VERSION_ID_PLACEHOLDER",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "N8N_INSTANCE_ID_PLACEHOLDER"
+  },
+  "nodeGroups": [],
+  "id": "WORKFLOW_ID_PLACEHOLDER",
+  "tags": []
+}
