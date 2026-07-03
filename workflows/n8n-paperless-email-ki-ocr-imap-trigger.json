@@ -20,13 +20,54 @@
           "name": "YOUR_N8N_IMAP_CREDENTIAL_NAME"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "HAS_ATTACHMENT_CONDITION_ID_PLACEHOLDER",
+              "leftValue": "={{ $binary.attachment_0 !== undefined }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "HAS_ATTACHMENT_IF_NODE_ID",
+      "name": "Hat Anhang?"
     }
   ],
   "pinData": {},
   "connections": {
     "Email Trigger (IMAP)": {
       "main": [
-        []
+        [
+          {
+            "node": "Hat Anhang?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
