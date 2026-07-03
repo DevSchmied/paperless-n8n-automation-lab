@@ -89,6 +89,41 @@
       ],
       "id": "IS_PDF_IF_NODE_ID",
       "name": "Ist PDF?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "FILE_SIZE_CONDITION_ID_PLACEHOLDER",
+              "leftValue": "={{ $binary.attachment_0.fileSize.includes('kB') || ($binary.attachment_0.fileSize.includes('MB') && parseFloat($binary.attachment_0.fileSize) < 20) }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        672,
+        -32
+      ],
+      "id": "FILE_SIZE_IF_NODE_ID",
+      "name": "Dateigröße okay?"
     }
   ],
   "pinData": {},
@@ -109,6 +144,17 @@
         [
           {
             "node": "Ist PDF?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ist PDF?": {
+      "main": [
+        [
+          {
+            "node": "Dateigröße okay?",
             "type": "main",
             "index": 0
           }
