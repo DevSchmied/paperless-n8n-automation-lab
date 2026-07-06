@@ -128,7 +128,7 @@
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "✅ Test: n8n has detected an email with a PDF attachment.",
+        "text": "=✅ Neue E-Mail für Paperless-n8n-Test erkannt\n\nBetreff: {{$json.subject}}\nAbsender: {{$json.from?.text || $json.from}}\nDateiname: {{$binary.attachment_0.fileName}}\nDateityp: {{$binary.attachment_0.mimeType}}\nDateigröße: {{$binary.attachment_0.fileSize}}\n\nStatus: PDF-Anhang wurde erfolgreich erkannt.",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
@@ -137,8 +137,8 @@
         880,
         -48
       ],
-      "id": "TELEGRAM_TEST_MESSAGE_NODE_ID",
-      "name": "Send Telegram Test Message",
+      "id": "TELEGRAM_NOTIFICATION_NODE_ID",
+      "name": "Send Telegram Message",
       "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
       "credentials": {
         "telegramApi": {
@@ -187,7 +187,7 @@
       "main": [
         [
           {
-            "node": "Send Telegram Test Message",
+            "node": "Send Telegram Message",
             "type": "main",
             "index": 0
           }
