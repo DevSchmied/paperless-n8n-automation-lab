@@ -128,6 +128,72 @@
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=⚠️ Paperless-n8n-Test: E-Mail konnte nicht verarbeitet werden.\n\nGrund: Kein Anhang gefunden.\nBetreff: {{$json.subject}}\nAbsender: {{$json.from?.text || $json.from}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        336,
+        128
+      ],
+      "id": "NO_ATTACHMENT_TELEGRAM_NODE_ID",
+      "name": "Kein Anhang",
+      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=⚠️ Paperless-n8n-Test: E-Mail konnte nicht verarbeitet werden.\n\nGrund: Der Anhang ist keine PDF-Datei.\nBetreff: {{$json.subject}}\nAbsender: {{$json.from?.text || $json.from}}\nDateityp: {{$binary.attachment_0.mimeType}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        112
+      ],
+      "id": "NO_PDF_TELEGRAM_NODE_ID",
+      "name": "Kein PDF",
+      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=⚠️ Paperless-n8n-Test: E-Mail konnte nicht verarbeitet werden.\n\nGrund: Die Datei ist größer als 20 MB.\nBetreff: {{$json.subject}}\nAbsender: {{$json.from?.text || $json.from}}\nDateiname: {{$binary.attachment_0.fileName}}\nDateigröße: {{$binary.attachment_0.fileSize}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        96
+      ],
+      "id": "FILE_TOO_LARGE_TELEGRAM_NODE_ID",
+      "name": "Datei ist zu groß",
+      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
         "text": "=✅ Neue E-Mail für Paperless-n8n-Test erkannt\n\nBetreff: {{$json.subject}}\nAbsender: {{$json.from?.text || $json.from}}\nDateiname: {{$binary.attachment_0.fileName}}\nDateityp: {{$binary.attachment_0.mimeType}}\nDateigröße: {{$binary.attachment_0.fileSize}}\n\nStatus: PDF-Anhang wurde erfolgreich erkannt.",
         "additionalFields": {}
       },
@@ -137,8 +203,8 @@
         880,
         -48
       ],
-      "id": "TELEGRAM_NOTIFICATION_NODE_ID",
-      "name": "Send Telegram Message",
+      "id": "SUCCESS_TELEGRAM_NODE_ID",
+      "name": "Telegram Erfolg",
       "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
       "credentials": {
         "telegramApi": {
@@ -169,6 +235,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Kein Anhang",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -180,6 +253,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Kein PDF",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -187,7 +267,14 @@
       "main": [
         [
           {
-            "node": "Send Telegram Message",
+            "node": "Telegram Erfolg",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Datei ist zu groß",
             "type": "main",
             "index": 0
           }
