@@ -119,11 +119,33 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        672,
+        656,
         -32
       ],
       "id": "FILE_SIZE_IF_NODE_ID",
       "name": "Dateigröße okay?"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "✅ Test: n8n has detected an email with a PDF attachment.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -48
+      ],
+      "id": "TELEGRAM_TEST_MESSAGE_NODE_ID",
+      "name": "Send Telegram Test Message",
+      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -160,12 +182,24 @@
           }
         ]
       ]
+    },
+    "Dateigröße okay?": {
+      "main": [
+        [
+          {
+            "node": "Send Telegram Test Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
   "versionId": "VERSION_ID_PLACEHOLDER",
   "meta": {
