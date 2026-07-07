@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        640,
-        0
+        496,
+        -256
       ],
       "id": "TELEGRAM_WEBHOOK_TEST_NODE_ID",
       "name": "Telegram Webhook Test",
@@ -101,6 +101,21 @@
           "name": "YOUR_N8N_PAPERLESS_HEADER_AUTH_CREDENTIAL_NAME"
         }
       }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        592,
+        0
+      ],
+      "id": "MERGE_DOCUMENT_DATA_AND_FILE_NODE_ID",
+      "name": "Dokumentdaten und Datei zusammenführen"
     }
   ],
   "pinData": {},
@@ -128,6 +143,28 @@
             "node": "Datei laden",
             "type": "main",
             "index": 0
+          }
+        ]
+      ]
+    },
+    "Dokumentdaten holen": {
+      "main": [
+        [
+          {
+            "node": "Dokumentdaten und Datei zusammenführen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Datei laden": {
+      "main": [
+        [
+          {
+            "node": "Dokumentdaten und Datei zusammenführen",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
