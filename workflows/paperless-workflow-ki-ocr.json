@@ -120,7 +120,7 @@
     {
       "parameters": {
         "operation": "write",
-        "fileName": "=/tmp/paperless-ki-ocr-{{$json.id}}.pdf",
+        "fileName": "=/files/tmp/paperless-ki-ocr-{{$json.id}}.pdf",
         "options": {}
       },
       "type": "n8n-nodes-base.readWriteFile",
