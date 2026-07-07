@@ -19,14 +19,27 @@
     },
     {
       "parameters": {
+        "jsCode": "const payload =\n  typeof $json.body === 'string'\n    ? JSON.parse($json.body)\n    : $json.body;\n\nconst match = payload.doc_url.match(/\\/documents\\/(\\d+)\\/?/);\n\nif (!match) {\n  throw new Error('Dokument-ID wurde in doc_url nicht gefunden');\n}\n\nreturn [{\n  json: {\n    ...payload,\n    document_id: Number(match[1]),\n  },\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        0
+      ],
+      "id": "EXTRACT_DOCUMENT_ID_NODE_ID",
+      "name": "Extract ID"
+    },
+    {
+      "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=✅ Paperless Workflow hat n8n erreicht\n\nDocument ID: {{$json.body.document_id}}\nTitel: {{$json.body.title}}\nOriginalname: {{$json.body.original_name}}\nDokumenttyp: {{$json.body.document_type}}\nKorrespondent: {{$json.body.correspondent}}\n\nStatus: Webhook funktioniert.",
+        "text": "=✅ Paperless Workflow hat n8n erreicht\n\nDocument ID: {{$json.document_id}}\nTitel: {{$json.title}}\nOriginalname: {{$json.original_name}}\nDokumenttyp: {{$json.document_type}}\nKorrespondent: {{$json.correspondent}}\n\nStatus: Webhook funktioniert.",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        208,
+        352,
         0
       ],
       "id": "TELEGRAM_WEBHOOK_TEST_NODE_ID",
@@ -43,6 +56,17 @@
   "pinData": {},
   "connections": {
     "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extract ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract ID": {
       "main": [
         [
           {
