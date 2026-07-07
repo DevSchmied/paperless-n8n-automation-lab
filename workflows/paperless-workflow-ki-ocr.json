@@ -1,0 +1,35 @@
+{
+  "name": "paperless-workflow-ki-ocr",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "paperless-ki-ocr",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "WEBHOOK_NODE_ID",
+      "name": "Webhook",
+      "webhookId": "WEBHOOK_ID_PLACEHOLDER"
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "VERSION_ID_PLACEHOLDER",
+  "meta": {
+    "instanceId": "N8N_INSTANCE_ID_PLACEHOLDER"
+  },
+  "nodeGroups": [],
+  "id": "WORKFLOW_ID_PLACEHOLDER",
+  "tags": []
+}
