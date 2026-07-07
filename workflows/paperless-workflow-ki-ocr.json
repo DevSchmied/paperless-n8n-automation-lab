@@ -116,6 +116,21 @@
       ],
       "id": "MERGE_DOCUMENT_DATA_AND_FILE_NODE_ID",
       "name": "Dokumentdaten und Datei zusammenführen"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/tmp/paperless-ki-ocr-{{$json.id}}.pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        0
+      ],
+      "id": "TEMPORARY_PDF_STORAGE_NODE_ID",
+      "name": "PDF temporär speichern"
     }
   ],
   "pinData": {},
@@ -165,6 +180,17 @@
             "node": "Dokumentdaten und Datei zusammenführen",
             "type": "main",
             "index": 1
+          }
+        ]
+      ]
+    },
+    "Dokumentdaten und Datei zusammenführen": {
+      "main": [
+        [
+          {
+            "node": "PDF temporär speichern",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
