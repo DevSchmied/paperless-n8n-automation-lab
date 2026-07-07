@@ -19,6 +19,28 @@
     },
     {
       "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=✅ Paperless Workflow hat n8n erreicht\n\nDocument ID: {{$json.document_id}}\nTitel: {{$json.title}}\nOriginalname: {{$json.original_name}}\nDokumenttyp: {{$json.document_type}}\nKorrespondent: {{$json.correspondent}}\n\nStatus: Webhook funktioniert.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        32
+      ],
+      "id": "TELEGRAM_WEBHOOK_TEST_NODE_ID",
+      "name": "Telegram Webhook Test",
+      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
+    },
+    {
+      "parameters": {
         "jsCode": "const payload =\n  typeof $json.body === 'string'\n    ? JSON.parse($json.body)\n    : $json.body;\n\nconst match = payload.doc_url.match(/\\/documents\\/(\\d+)\\/?/);\n\nif (!match) {\n  throw new Error('Dokument-ID wurde in doc_url nicht gefunden');\n}\n\nreturn [{\n  json: {\n    ...payload,\n    document_id: Number(match[1]),\n  },\n}];"
       },
       "type": "n8n-nodes-base.code",
@@ -32,25 +54,38 @@
     },
     {
       "parameters": {
-        "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=✅ Paperless Workflow hat n8n erreicht\n\nDocument ID: {{$json.document_id}}\nTitel: {{$json.title}}\nOriginalname: {{$json.original_name}}\nDokumenttyp: {{$json.document_type}}\nKorrespondent: {{$json.correspondent}}\n\nStatus: Webhook funktioniert.",
-        "additionalFields": {}
+        "url": "=http://YOUR_PAPERLESS_HOST/api/documents/{{$json.document_id}}/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
       },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
       "position": [
         352,
-        0
+        -80
       ],
-      "id": "TELEGRAM_WEBHOOK_TEST_NODE_ID",
-      "name": "Telegram Webhook Test",
-      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "id": "GET_DOCUMENT_METADATA_NODE_ID",
+      "name": "Dokumentdaten holen",
       "credentials": {
-        "telegramApi": {
-          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        "httpHeaderAuth": {
+          "id": "YOUR_N8N_PAPERLESS_HEADER_AUTH_CREDENTIAL_ID",
+          "name": "YOUR_N8N_PAPERLESS_HEADER_AUTH_CREDENTIAL_NAME"
         }
       }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        352,
+        96
+      ],
+      "id": "DOWNLOAD_DOCUMENT_FILE_NODE_ID",
+      "name": "Datei laden"
     }
   ],
   "pinData": {},
@@ -70,7 +105,12 @@
       "main": [
         [
           {
-            "node": "Telegram Webhook Test",
+            "node": "Dokumentdaten holen",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Datei laden",
             "type": "main",
             "index": 0
           }
