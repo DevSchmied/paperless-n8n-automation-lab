@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        624,
-        32
+        640,
+        0
       ],
       "id": "TELEGRAM_WEBHOOK_TEST_NODE_ID",
       "name": "Telegram Webhook Test",
@@ -76,7 +76,16 @@
     },
     {
       "parameters": {
-        "options": {}
+        "url": "=http://YOUR_PAPERLESS_HOST/api/documents/{{$json.document_id}}/download/",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
@@ -85,7 +94,13 @@
         96
       ],
       "id": "DOWNLOAD_DOCUMENT_FILE_NODE_ID",
-      "name": "Datei laden"
+      "name": "Datei laden",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_N8N_PAPERLESS_HEADER_AUTH_CREDENTIAL_ID",
+          "name": "YOUR_N8N_PAPERLESS_HEADER_AUTH_CREDENTIAL_NAME"
+        }
+      }
     }
   ],
   "pinData": {},
