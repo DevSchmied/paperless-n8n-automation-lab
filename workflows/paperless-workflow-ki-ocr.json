@@ -13,7 +13,7 @@
         512,
         320
       ],
-      "id": "WEBHOOK_NODE_ID",
+      "id": "NODE_ID_WEBHOOK_PLACEHOLDER",
       "name": "Webhook",
       "webhookId": "WEBHOOK_ID_PLACEHOLDER"
     },
@@ -29,7 +29,7 @@
         1088,
         144
       ],
-      "id": "TELEGRAM_WEBHOOK_TEST_NODE_ID",
+      "id": "NODE_ID_TELEGRAM_WEBHOOK_TEST_PLACEHOLDER",
       "name": "Telegram Webhook Test",
       "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
       "credentials": {
@@ -49,12 +49,12 @@
         688,
         320
       ],
-      "id": "EXTRACT_DOCUMENT_ID_NODE_ID",
+      "id": "NODE_ID_EXTRACT_ID_PLACEHOLDER",
       "name": "Extract ID"
     },
     {
       "parameters": {
-        "url": "=http://YOUR_PAPERLESS_HOST/api/documents/{{$json.document_id}}/",
+        "url": "=http://YOUR_PAPERLESS_HOST:8000/api/documents/{{$json.document_id}}/",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "options": {}
@@ -65,7 +65,7 @@
         864,
         240
       ],
-      "id": "GET_DOCUMENT_METADATA_NODE_ID",
+      "id": "NODE_ID_FETCH_DOCUMENT_DATA_PLACEHOLDER",
       "name": "Dokumentdaten holen",
       "credentials": {
         "httpHeaderAuth": {
@@ -76,7 +76,7 @@
     },
     {
       "parameters": {
-        "url": "=http://YOUR_PAPERLESS_HOST/api/documents/{{$json.document_id}}/download/",
+        "url": "=http://YOUR_PAPERLESS_HOST:8000/api/documents/{{$json.document_id}}/download/",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "options": {
@@ -93,7 +93,7 @@
         864,
         416
       ],
-      "id": "DOWNLOAD_DOCUMENT_FILE_NODE_ID",
+      "id": "NODE_ID_DOWNLOAD_FILE_PLACEHOLDER",
       "name": "Datei laden",
       "credentials": {
         "httpHeaderAuth": {
@@ -114,7 +114,7 @@
         1104,
         320
       ],
-      "id": "MERGE_DOCUMENT_DATA_AND_FILE_NODE_ID",
+      "id": "NODE_ID_MERGE_DOCUMENT_AND_FILE_PLACEHOLDER",
       "name": "Dokumentdaten und Datei zusammenführen"
     },
     {
@@ -129,7 +129,7 @@
         1296,
         320
       ],
-      "id": "TEMPORARY_PDF_STORAGE_NODE_ID",
+      "id": "NODE_ID_SAVE_TEMPORARY_PDF_PLACEHOLDER",
       "name": "PDF temporär speichern"
     },
     {
@@ -142,7 +142,7 @@
         1472,
         320
       ],
-      "id": "CONVERT_PDF_TO_PNG_NODE_ID",
+      "id": "NODE_ID_CONVERT_PDF_TO_PNG_PLACEHOLDER",
       "name": "PDF in PNG-Seiten umwandeln"
     },
     {
@@ -156,7 +156,7 @@
         1632,
         320
       ],
-      "id": "LOAD_PNG_PAGES_NODE_ID",
+      "id": "NODE_ID_LOAD_PNG_PAGES_PLACEHOLDER",
       "name": "PNG-Seiten laden"
     },
     {
@@ -169,7 +169,7 @@
         1808,
         320
       ],
-      "id": "ADD_PAGE_METADATA_NODE_ID",
+      "id": "NODE_ID_ADD_PAGE_METADATA_PLACEHOLDER",
       "name": "Seitenmetadaten ergänzen"
     },
     {
@@ -189,7 +189,7 @@
         2016,
         320
       ],
-      "id": "SORT_PAGES_NODE_ID",
+      "id": "NODE_ID_SORT_PAGES_PLACEHOLDER",
       "name": "Seiten sortieren"
     },
     {
@@ -202,7 +202,7 @@
         2224,
         320
       ],
-      "id": "PROCESS_PAGES_IN_BATCHES_NODE_ID",
+      "id": "NODE_ID_PROCESS_PAGES_SEQUENTIALLY_PLACEHOLDER",
       "name": "Seiten einzeln verarbeiten"
     },
     {
@@ -217,11 +217,12 @@
         2480,
         432
       ],
-      "id": "CONVERT_PAGE_IMAGE_TO_BASE64_NODE_ID",
+      "id": "NODE_ID_PAGE_IMAGE_TO_BASE64_PLACEHOLDER",
       "name": "Seitenbild zu Base64"
     },
     {
       "parameters": {
+        "mode": "runOnceForEachItem",
         "jsCode": "const page =\n  $('Seiten einzeln verarbeiten').item.json;\n\nreturn {\n  json: {\n    ...page,\n    image_base64: $json.image_base64,\n  },\n};"
       },
       "type": "n8n-nodes-base.code",
@@ -230,8 +231,103 @@
         2688,
         432
       ],
-      "id": "ADD_BASE64_METADATA_NODE_ID",
+      "id": "NODE_ID_ADD_BASE64_METADATA_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ ({\n  model: 'glm-ocr',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere diese einzelne Dokumentseite.\n\nAufgaben:\n1. Erkenne den vollständigen sichtbaren Text.\n2. Erhalte Überschriften, Absätze und Listen.\n3. Gib erkannte Tabellen als Markdown-Tabellen zurück.\n4. Beschreibe die Dokumentstruktur.\n5. Erfinde keine Inhalte.\n6. Markiere tatsächlich unlesbare Stellen mit [unlesbar].\n7. Wiederhole keine Inhalte unnötig.\n\nAntworte ausschließlich als gültiges JSON in dieser Struktur:\n\n{\n  \"text_markdown\": \"...\",\n  \"tables_markdown\": [],\n  \"document_structure\": [],\n  \"figures\": [],\n  \"warnings\": []\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2896,
+        432
+      ],
+      "id": "NODE_ID_ANALYZE_PAGE_WITH_GLM_OCR_PLACEHOLDER",
+      "name": "GLM-OCR Seite analysieren"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ASSIGNMENT_ID_DOCUMENT_ID_PLACEHOLDER",
+              "name": "document_id",
+              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.document_id }}",
+              "type": "number"
+            },
+            {
+              "id": "ASSIGNMENT_ID_TITLE_PLACEHOLDER",
+              "name": "title",
+              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "ASSIGNMENT_ID_ORIGINAL_FILE_NAME_PLACEHOLDER",
+              "name": "original_file_name",
+              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.original_content }}",
+              "type": "string"
+            },
+            {
+              "id": "ASSIGNMENT_ID_ORIGINAL_CONTENT_PLACEHOLDER",
+              "name": "original_content",
+              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.original_content }}",
+              "type": "string"
+            },
+            {
+              "id": "ASSIGNMENT_ID_ORIGINAL_CUSTOM_FIELDS_PLACEHOLDER",
+              "name": "original_custom_fields",
+              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.original_custom_fields }}",
+              "type": "array"
+            },
+            {
+              "id": "ASSIGNMENT_ID_PAGE_NUMBER_PLACEHOLDER",
+              "name": "page_number",
+              "value": null,
+              "type": "number"
+            },
+            {
+              "id": "ASSIGNMENT_ID_PAGE_FILE_NAME_PLACEHOLDER",
+              "name": "page_file_name",
+              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.page_file_name }}",
+              "type": "string"
+            },
+            {
+              "id": "ASSIGNMENT_ID_IMAGE_BASE64_PLACEHOLDER",
+              "name": "image_base64",
+              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.image_base64 }}",
+              "type": "string"
+            },
+            {
+              "id": "ASSIGNMENT_ID_GLM_RAW_PLACEHOLDER",
+              "name": "glm_raw",
+              "value": "=={{ $json.message?.content ?? '' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3104,
+        432
+      ],
+      "id": "NODE_ID_PREPARE_GLM_RESULT_PLACEHOLDER",
+      "name": "GLM-Ergebnis vorbereiten"
     }
   ],
   "pinData": {},
@@ -375,6 +471,28 @@
       ]
     },
     "Base64-Metadaten ergänzen": {
+      "main": [
+        [
+          {
+            "node": "GLM-OCR Seite analysieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GLM-OCR Seite analysieren": {
+      "main": [
+        [
+          {
+            "node": "GLM-Ergebnis vorbereiten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GLM-Ergebnis vorbereiten": {
       "main": [
         [
           {
