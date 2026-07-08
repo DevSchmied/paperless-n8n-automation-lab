@@ -114,7 +114,7 @@
         1104,
         320
       ],
-      "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFUHREN_PLACEHOLDER",
+      "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFUEHREN_PLACEHOLDER",
       "name": "Dokumentdaten und Datei zusammenführen"
     },
     {
@@ -129,7 +129,7 @@
         1296,
         320
       ],
-      "id": "NODE_ID_PDF_TEMPORAR_SPEICHERN_PLACEHOLDER",
+      "id": "NODE_ID_PDF_TEMPORAER_SPEICHERN_PLACEHOLDER",
       "name": "PDF temporär speichern"
     },
     {
@@ -169,7 +169,7 @@
         1808,
         320
       ],
-      "id": "NODE_ID_SEITENMETADATEN_ERGANZEN_PLACEHOLDER",
+      "id": "NODE_ID_SEITENMETADATEN_ERGAENZEN_PLACEHOLDER",
       "name": "Seitenmetadaten ergänzen"
     },
     {
@@ -215,7 +215,7 @@
       "typeVersion": 1.1,
       "position": [
         2400,
-        464
+        400
       ],
       "id": "NODE_ID_SEITENBILD_ZU_BASE64_PLACEHOLDER",
       "name": "Seitenbild zu Base64"
@@ -229,9 +229,9 @@
       "typeVersion": 2,
       "position": [
         2576,
-        320
+        496
       ],
-      "id": "NODE_ID_BASE64_METADATEN_ERGANZEN_PLACEHOLDER",
+      "id": "NODE_ID_BASE64_METADATEN_ERGAENZEN_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
     },
     {
@@ -253,7 +253,7 @@
       "typeVersion": 4.4,
       "position": [
         2736,
-        464
+        400
       ],
       "id": "NODE_ID_GLM_OCR_SEITE_ANALYSIEREN_PLACEHOLDER",
       "name": "GLM-OCR Seite analysieren"
@@ -323,8 +323,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2880,
-        352
+        2896,
+        496
       ],
       "id": "NODE_ID_GLM_ERGEBNIS_VORBEREITEN_PLACEHOLDER",
       "name": "GLM-Ergebnis vorbereiten"
@@ -341,11 +341,25 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        3040,
-        464
+        3056,
+        400
       ],
       "id": "NODE_ID_QWEN_VISUELLE_ANALYSE_PLACEHOLDER",
       "name": "Qwen visuelle Analyse"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "function parseModelResult(value) {\n  const raw = String(value ?? '').trim();\n\n  const cleaned = raw\n    .replace(/^```json\\s*/i, '')\n    .replace(/^```\\s*/i, '')\n    .replace(/\\s*```$/i, '')\n    .trim();\n\n  try {\n    return {\n      parsed: true,\n      data: JSON.parse(cleaned),\n      raw,\n    };\n  } catch {\n    return {\n      parsed: false,\n      data: {},\n      raw,\n    };\n  }\n}\n\nconst glmInput =\n  $('GLM-Ergebnis vorbereiten').item.json;\n\nconst glm =\n  parseModelResult(glmInput.glm_raw);\n\nconst qwen =\n  parseModelResult($json.message?.content);\n\nreturn {\n  json: {\n    document_id:\n      glmInput.document_id,\n\n    title:\n      glmInput.title,\n\n    original_file_name:\n      glmInput.original_file_name,\n\n    // Ursprünglichen Paperless-OCR-Text behalten.\n    original_content:\n      glmInput.original_content,\n\n    original_custom_fields:\n      glmInput.original_custom_fields,\n\n    page_number:\n      glmInput.page_number,\n\n    page_file_name:\n      glmInput.page_file_name,\n\n    glm_parsed:\n      glm.parsed,\n\n    glm:\n      glm.data,\n\n    glm_raw:\n      glm.raw,\n\n    qwen_parsed:\n      qwen.parsed,\n\n    qwen:\n      qwen.data,\n\n    qwen_raw:\n      qwen.raw,\n  },\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3232,
+        496
+      ],
+      "id": "NODE_ID_SEITENERGEBNIS_NORMALISIEREN_PLACEHOLDER",
+      "name": "Seitenergebnis normalisieren"
     }
   ],
   "pinData": {},
@@ -522,6 +536,17 @@
       ]
     },
     "Qwen visuelle Analyse": {
+      "main": [
+        [
+          {
+            "node": "Seitenergebnis normalisieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seitenergebnis normalisieren": {
       "main": [
         [
           {
