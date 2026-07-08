@@ -114,7 +114,7 @@
         1104,
         320
       ],
-      "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFUEHREN_PLACEHOLDER",
+      "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFÜHREN_PLACEHOLDER",
       "name": "Dokumentdaten und Datei zusammenführen"
     },
     {
@@ -129,7 +129,7 @@
         1296,
         320
       ],
-      "id": "NODE_ID_PDF_TEMPORAER_SPEICHERN_PLACEHOLDER",
+      "id": "NODE_ID_PDF_TEMPORÄR_SPEICHERN_PLACEHOLDER",
       "name": "PDF temporär speichern"
     },
     {
@@ -169,7 +169,7 @@
         1808,
         320
       ],
-      "id": "NODE_ID_SEITENMETADATEN_ERGAENZEN_PLACEHOLDER",
+      "id": "NODE_ID_SEITENMETADATEN_ERGÄNZEN_PLACEHOLDER",
       "name": "Seitenmetadaten ergänzen"
     },
     {
@@ -231,7 +231,7 @@
         2576,
         496
       ],
-      "id": "NODE_ID_BASE64_METADATEN_ERGAENZEN_PLACEHOLDER",
+      "id": "NODE_ID_BASE64_METADATEN_ERGÄNZEN_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
     },
     {
@@ -374,7 +374,7 @@
         2400,
         224
       ],
-      "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUEHREN_PLACEHOLDER",
+      "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFÜHREN_PLACEHOLDER",
       "name": "Dokumentergebnis zusammenführen"
     },
     {
@@ -388,7 +388,7 @@
           },
           "conditions": [
             {
-              "id": "CONDITION_ID_KI_ERGEBNIS_BRAUCHBAR_PLACEHOLDER",
+              "id": "CONDITION_ID_KI_ERGEBNIS_BRAUCHBAR_1_PLACEHOLDER",
               "leftValue": "={{ $json.quality.usable }}",
               "rightValue": "true",
               "operator": {
