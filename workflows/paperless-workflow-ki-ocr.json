@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        0,
-        0
+        512,
+        320
       ],
       "id": "WEBHOOK_NODE_ID",
       "name": "Webhook",
@@ -26,8 +26,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        496,
-        -256
+        1088,
+        144
       ],
       "id": "TELEGRAM_WEBHOOK_TEST_NODE_ID",
       "name": "Telegram Webhook Test",
@@ -46,8 +46,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        176,
-        0
+        688,
+        320
       ],
       "id": "EXTRACT_DOCUMENT_ID_NODE_ID",
       "name": "Extract ID"
@@ -62,8 +62,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        352,
-        -80
+        864,
+        240
       ],
       "id": "GET_DOCUMENT_METADATA_NODE_ID",
       "name": "Dokumentdaten holen",
@@ -90,8 +90,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        352,
-        96
+        864,
+        416
       ],
       "id": "DOWNLOAD_DOCUMENT_FILE_NODE_ID",
       "name": "Datei laden",
@@ -111,8 +111,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        592,
-        0
+        1104,
+        320
       ],
       "id": "MERGE_DOCUMENT_DATA_AND_FILE_NODE_ID",
       "name": "Dokumentdaten und Datei zusammenführen"
@@ -126,11 +126,51 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        800,
-        0
+        1312,
+        320
       ],
       "id": "TEMPORARY_PDF_STORAGE_NODE_ID",
       "name": "PDF temporär speichern"
+    },
+    {
+      "parameters": {
+        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 200 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        320
+      ],
+      "id": "CONVERT_PDF_TO_PNG_NODE_ID",
+      "name": "PDF in PNG-Seiten umwandeln"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ '/files/tmp/paperless-ki-ocr-' + $('Dokumentdaten und Datei zusammenführen').first().json.id + '/page-*.png' }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        320
+      ],
+      "id": "LOAD_PNG_PAGES_NODE_ID",
+      "name": "PNG-Seiten laden"
+    },
+    {
+      "parameters": {
+        "jsCode": "const document =\n  $('Dokumentdaten und Datei zusammenführen').first().json;\n\nreturn $input.all().map((item, index) => {\n  const fileName =\n    item.binary?.data?.fileName ??\n    `page-${index + 1}.png`;\n\n  const match = fileName.match(/page-(\\d+)\\.png$/i);\n\n  return {\n    json: {\n      document_id: document.id,\n      title: document.title ?? '',\n      original_file_name:\n        document.original_file_name ??\n        document.filename ??\n        '',\n\n      original_content:\n        document.content ?? '',\n\n      original_custom_fields:\n        Array.isArray(document.custom_fields)\n          ? document.custom_fields\n          : [],\n\n      page_number:\n        match\n          ? Number(match[1])\n          : index + 1,\n\n      page_file_name: fileName,\n    },\n\n    binary: item.binary,\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        320
+      ],
+      "id": "ADD_PAGE_METADATA_NODE_ID",
+      "name": "Seitenmetadaten ergänzen"
     }
   ],
   "pinData": {},
@@ -194,12 +234,46 @@
           }
         ]
       ]
+    },
+    "PDF temporär speichern": {
+      "main": [
+        [
+          {
+            "node": "PDF in PNG-Seiten umwandeln",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF in PNG-Seiten umwandeln": {
+      "main": [
+        [
+          {
+            "node": "PNG-Seiten laden",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PNG-Seiten laden": {
+      "main": [
+        [
+          {
+            "node": "Seitenmetadaten ergänzen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
   "versionId": "VERSION_ID_PLACEHOLDER",
   "meta": {
