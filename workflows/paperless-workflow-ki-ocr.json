@@ -126,7 +126,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        1312,
+        1296,
         320
       ],
       "id": "TEMPORARY_PDF_STORAGE_NODE_ID",
@@ -139,7 +139,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1520,
+        1472,
         320
       ],
       "id": "CONVERT_PDF_TO_PNG_NODE_ID",
@@ -153,7 +153,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        1680,
+        1632,
         320
       ],
       "id": "LOAD_PNG_PAGES_NODE_ID",
@@ -166,11 +166,31 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1856,
+        1808,
         320
       ],
       "id": "ADD_PAGE_METADATA_NODE_ID",
       "name": "Seitenmetadaten ergänzen"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "page_number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        320
+      ],
+      "id": "SORT_PAGES_NODE_ID",
+      "name": "Seiten sortieren"
     }
   ],
   "pinData": {},
@@ -262,6 +282,17 @@
         [
           {
             "node": "Seitenmetadaten ergänzen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seitenmetadaten ergänzen": {
+      "main": [
+        [
+          {
+            "node": "Seiten sortieren",
             "type": "main",
             "index": 0
           }
