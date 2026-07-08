@@ -191,6 +191,34 @@
       ],
       "id": "SORT_PAGES_NODE_ID",
       "name": "Seiten sortieren"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2224,
+        320
+      ],
+      "id": "PROCESS_PAGES_IN_BATCHES_NODE_ID",
+      "name": "Seiten einzeln verarbeiten"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "destinationKey": "image_base64",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        2480,
+        432
+      ],
+      "id": "CONVERT_PAGE_IMAGE_TO_BASE64_NODE_ID",
+      "name": "Seitenbild zu Base64"
     }
   ],
   "pinData": {},
@@ -293,6 +321,40 @@
         [
           {
             "node": "Seiten sortieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seiten sortieren": {
+      "main": [
+        [
+          {
+            "node": "Seiten einzeln verarbeiten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seiten einzeln verarbeiten": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Seitenbild zu Base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seitenbild zu Base64": {
+      "main": [
+        [
+          {
+            "node": "Seiten einzeln verarbeiten",
             "type": "main",
             "index": 0
           }
