@@ -363,6 +363,19 @@
       ],
       "id": "NODE_ID_SEITENERGEBNIS_NORMALISIEREN_PLACEHOLDER",
       "name": "Seitenergebnis normalisieren"
+    },
+    {
+      "parameters": {
+        "jsCode": "const pages = $input\n  .all()\n  .map(item => item.json)\n  .sort(\n    (a, b) =>\n      Number(a.page_number) -\n      Number(b.page_number)\n  );\n\nfunction toArray(value) {\n  return Array.isArray(value)\n    ? value.filter(value =>\n        value !== null &&\n        value !== undefined &&\n        String(value).trim() !== ''\n      )\n    : [];\n}\n\n/**\n * Falls der Workflow dasselbe Dokument erneut verarbeitet,\n * wird nur der wirklich ursprüngliche Paperless-OCR-Bereich\n * übernommen.\n */\nfunction extractOriginalPaperlessContent(content) {\n  const value =\n    String(content ?? '').trim();\n\n  const marker =\n    '=== Ursprünglicher Paperless-OCR-Inhalt ===';\n\n  if (!value.includes(marker)) {\n    return value;\n  }\n\n  return value\n    .split(marker)\n    .slice(1)\n    .join(marker)\n    .trim();\n}\n\nconst textParts = [];\nconst tables = [];\nconst documentStructures = [];\nconst imageDescriptions = [];\nconst warnings = [];\n\nfor (const page of pages) {\n  const glmText =\n    page.glm?.text_markdown ||\n    page.glm?.text ||\n    (!page.glm_parsed\n      ? page.glm_raw\n      : '');\n\n  if (String(glmText ?? '').trim()) {\n    textParts.push(\n      `## Seite ${page.page_number}\\n\\n` +\n      String(glmText).trim()\n    );\n  }\n\n  for (\n    const table of toArray(\n      page.glm?.tables_markdown\n    )\n  ) {\n    tables.push(\n      `### Tabelle auf Seite ${page.page_number}\\n\\n` +\n      String(table).trim()\n    );\n  }\n\n  const structures =\n    toArray(\n      page.glm?.document_structure\n    );\n\n  if (structures.length > 0) {\n    documentStructures.push(\n      `### Struktur auf Seite ${page.page_number}\\n\\n` +\n      structures\n        .map(value => `- ${value}`)\n        .join('\\n')\n    );\n  }\n\n  const visualParts = [\n    ...toArray(page.qwen?.symbols),\n    ...toArray(page.qwen?.stamps),\n    ...toArray(page.qwen?.signatures),\n    ...toArray(page.qwen?.handwriting),\n    ...toArray(page.qwen?.images),\n    ...toArray(page.qwen?.visual_notes),\n  ];\n\n  if (visualParts.length > 0) {\n    imageDescriptions.push(\n      `### Visuelle Inhalte auf Seite ${page.page_number}\\n\\n` +\n      visualParts\n        .map(value => `- ${value}`)\n        .join('\\n')\n    );\n  }\n\n  warnings.push(\n    ...toArray(page.glm?.warnings),\n    ...toArray(page.qwen?.warnings)\n  );\n}\n\nconst aiSections = [];\n\nif (textParts.length > 0) {\n  aiSections.push(\n    `# Dokumenttext\\n\\n${textParts.join('\\n\\n')}`\n  );\n}\n\nif (tables.length > 0) {\n  aiSections.push(\n    `# Tabellen\\n\\n${tables.join('\\n\\n')}`\n  );\n}\n\nif (documentStructures.length > 0) {\n  aiSections.push(\n    `# Dokumentstruktur\\n\\n` +\n    documentStructures.join('\\n\\n')\n  );\n}\n\nif (imageDescriptions.length > 0) {\n  aiSections.push(\n    `# Bild- und Layouterkennung\\n\\n` +\n    imageDescriptions.join('\\n\\n')\n  );\n}\n\n// Ausschließlich neu erzeugter KI-/Vision-Inhalt.\nconst aiContent =\n  aiSections.join('\\n\\n').trim();\n\n// Wirklich ursprünglicher Paperless-OCR-Inhalt.\nconst originalPaperlessContent =\n  extractOriginalPaperlessContent(\n    pages[0]?.original_content\n  );\n\nconst originalSection =\n  originalPaperlessContent ||\n  '[Kein ursprünglicher Paperless-OCR-Inhalt vorhanden]';\n\n// Dieser Inhalt wird später nach Paperless geschrieben.\nconst combinedPaperlessContent = [\n  '=== KI-OCR / Vision-Ergebnis ===',\n  '',\n  aiContent ||\n    '[Kein brauchbares KI-OCR-Ergebnis erzeugt]',\n  '',\n  '=== Ursprünglicher Paperless-OCR-Inhalt ===',\n  '',\n  originalSection,\n]\n  .join('\\n')\n  .trim();\n\n/**\n * Qualitätsprüfung ausschließlich auf Grundlage\n * des neuen KI-Inhalts.\n */\nconst normalizedAiContent =\n  aiContent.toLowerCase();\n\nconst contentWithoutErrorPhrases =\n  normalizedAiContent\n    .replace(/\\[?unlesbar\\]?/gi, '')\n    .replace(/keine daten/gi, '')\n    .replace(/nicht erkennbar/gi, '')\n    .replace(/kein text erkannt/gi, '')\n    .replace(/^#+.*$/gm, '')\n    .replace(/\\s+/g, '');\n\nconst quality = {\n  usable:\n    pages.length > 0 &&\n    aiContent.length >= 100 &&\n    contentWithoutErrorPhrases.length >= 30,\n\n  ai_character_count:\n    aiContent.length,\n\n  original_character_count:\n    originalPaperlessContent.length,\n\n  combined_character_count:\n    combinedPaperlessContent.length,\n\n  page_count:\n    pages.length,\n\n  glm_json_valid_for_all_pages:\n    pages.every(page =>\n      page.glm_parsed === true\n    ),\n\n  qwen_json_valid_for_all_pages:\n    pages.every(page =>\n      page.qwen_parsed === true\n    ),\n\n  markdown_table_detected:\n    tables.length > 0,\n\n  image_descriptions_present:\n    imageDescriptions.length > 0,\n\n  warnings,\n};\n\nreturn [\n  {\n    json: {\n      document_id:\n        pages[0]?.document_id,\n\n      title:\n        pages[0]?.title ?? '',\n\n      original_file_name:\n        pages[0]?.original_file_name ?? '',\n\n      original_custom_fields:\n        pages[0]?.original_custom_fields ?? [],\n\n      pages,\n\n      ai_content:\n        aiContent,\n\n      original_paperless_content:\n        originalPaperlessContent,\n\n      combined_paperless_content:\n        combinedPaperlessContent,\n\n      quality,\n\n      // Während der Tests nicht nach Paperless schreiben.\n      write_back: false,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2432,
+        224
+      ],
+      "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUEHREN_PLACEHOLDER",
+      "name": "Dokumentergebnis zusammenführen"
     }
   ],
   "pinData": {},
@@ -484,7 +497,13 @@
     },
     "Seiten einzeln verarbeiten": {
       "main": [
-        [],
+        [
+          {
+            "node": "Dokumentergebnis zusammenführen",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Seitenbild zu Base64",
