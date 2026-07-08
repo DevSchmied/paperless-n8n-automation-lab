@@ -219,6 +219,19 @@
       ],
       "id": "CONVERT_PAGE_IMAGE_TO_BASE64_NODE_ID",
       "name": "Seitenbild zu Base64"
+    },
+    {
+      "parameters": {
+        "jsCode": "const page =\n  $('Seiten einzeln verarbeiten').item.json;\n\nreturn {\n  json: {\n    ...page,\n    image_base64: $json.image_base64,\n  },\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2688,
+        432
+      ],
+      "id": "ADD_BASE64_METADATA_NODE_ID",
+      "name": "Base64-Metadaten ergänzen"
     }
   ],
   "pinData": {},
@@ -351,6 +364,17 @@
       ]
     },
     "Seitenbild zu Base64": {
+      "main": [
+        [
+          {
+            "node": "Base64-Metadaten ergänzen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Base64-Metadaten ergänzen": {
       "main": [
         [
           {
