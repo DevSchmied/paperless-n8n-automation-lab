@@ -15,7 +15,7 @@
       ],
       "id": "NODE_ID_WEBHOOK_PLACEHOLDER",
       "name": "Webhook",
-      "webhookId": "WEBHOOK_ID_PLACEHOLDER"
+      "webhookId": "WEBHOOK_ID_WEBHOOK_PLACEHOLDER"
     },
     {
       "parameters": {
@@ -31,7 +31,7 @@
       ],
       "id": "NODE_ID_TELEGRAM_WEBHOOK_TEST_PLACEHOLDER",
       "name": "Telegram Webhook Test",
-      "webhookId": "TELEGRAM_WEBHOOK_ID_PLACEHOLDER",
+      "webhookId": "WEBHOOK_ID_TELEGRAM_WEBHOOK_TEST_PLACEHOLDER",
       "credentials": {
         "telegramApi": {
           "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
@@ -65,7 +65,7 @@
         864,
         240
       ],
-      "id": "NODE_ID_FETCH_DOCUMENT_DATA_PLACEHOLDER",
+      "id": "NODE_ID_DOKUMENTDATEN_HOLEN_PLACEHOLDER",
       "name": "Dokumentdaten holen",
       "credentials": {
         "httpHeaderAuth": {
@@ -93,7 +93,7 @@
         864,
         416
       ],
-      "id": "NODE_ID_DOWNLOAD_FILE_PLACEHOLDER",
+      "id": "NODE_ID_DATEI_LADEN_PLACEHOLDER",
       "name": "Datei laden",
       "credentials": {
         "httpHeaderAuth": {
@@ -114,7 +114,7 @@
         1104,
         320
       ],
-      "id": "NODE_ID_MERGE_DOCUMENT_AND_FILE_PLACEHOLDER",
+      "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFUHREN_PLACEHOLDER",
       "name": "Dokumentdaten und Datei zusammenführen"
     },
     {
@@ -129,7 +129,7 @@
         1296,
         320
       ],
-      "id": "NODE_ID_SAVE_TEMPORARY_PDF_PLACEHOLDER",
+      "id": "NODE_ID_PDF_TEMPORAR_SPEICHERN_PLACEHOLDER",
       "name": "PDF temporär speichern"
     },
     {
@@ -142,7 +142,7 @@
         1472,
         320
       ],
-      "id": "NODE_ID_CONVERT_PDF_TO_PNG_PLACEHOLDER",
+      "id": "NODE_ID_PDF_IN_PNG_SEITEN_UMWANDELN_PLACEHOLDER",
       "name": "PDF in PNG-Seiten umwandeln"
     },
     {
@@ -156,7 +156,7 @@
         1632,
         320
       ],
-      "id": "NODE_ID_LOAD_PNG_PAGES_PLACEHOLDER",
+      "id": "NODE_ID_PNG_SEITEN_LADEN_PLACEHOLDER",
       "name": "PNG-Seiten laden"
     },
     {
@@ -169,7 +169,7 @@
         1808,
         320
       ],
-      "id": "NODE_ID_ADD_PAGE_METADATA_PLACEHOLDER",
+      "id": "NODE_ID_SEITENMETADATEN_ERGANZEN_PLACEHOLDER",
       "name": "Seitenmetadaten ergänzen"
     },
     {
@@ -189,7 +189,7 @@
         2016,
         320
       ],
-      "id": "NODE_ID_SORT_PAGES_PLACEHOLDER",
+      "id": "NODE_ID_SEITEN_SORTIEREN_PLACEHOLDER",
       "name": "Seiten sortieren"
     },
     {
@@ -202,7 +202,7 @@
         2224,
         320
       ],
-      "id": "NODE_ID_PROCESS_PAGES_SEQUENTIALLY_PLACEHOLDER",
+      "id": "NODE_ID_SEITEN_EINZELN_VERARBEITEN_PLACEHOLDER",
       "name": "Seiten einzeln verarbeiten"
     },
     {
@@ -214,10 +214,10 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        2480,
-        432
+        2400,
+        464
       ],
-      "id": "NODE_ID_PAGE_IMAGE_TO_BASE64_PLACEHOLDER",
+      "id": "NODE_ID_SEITENBILD_ZU_BASE64_PLACEHOLDER",
       "name": "Seitenbild zu Base64"
     },
     {
@@ -228,10 +228,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2688,
-        432
+        2576,
+        320
       ],
-      "id": "NODE_ID_ADD_BASE64_METADATA_PLACEHOLDER",
+      "id": "NODE_ID_BASE64_METADATEN_ERGANZEN_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
     },
     {
@@ -252,10 +252,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        2896,
-        432
+        2736,
+        464
       ],
-      "id": "NODE_ID_ANALYZE_PAGE_WITH_GLM_OCR_PLACEHOLDER",
+      "id": "NODE_ID_GLM_OCR_SEITE_ANALYSIEREN_PLACEHOLDER",
       "name": "GLM-OCR Seite analysieren"
     },
     {
@@ -265,55 +265,55 @@
             {
               "id": "ASSIGNMENT_ID_DOCUMENT_ID_PLACEHOLDER",
               "name": "document_id",
-              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.document_id }}",
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.document_id }}",
               "type": "number"
             },
             {
               "id": "ASSIGNMENT_ID_TITLE_PLACEHOLDER",
               "name": "title",
-              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.title }}",
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.title }}",
               "type": "string"
             },
             {
               "id": "ASSIGNMENT_ID_ORIGINAL_FILE_NAME_PLACEHOLDER",
               "name": "original_file_name",
-              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.original_content }}",
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.original_file_name }}",
               "type": "string"
             },
             {
               "id": "ASSIGNMENT_ID_ORIGINAL_CONTENT_PLACEHOLDER",
               "name": "original_content",
-              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.original_content }}",
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.original_content }}",
               "type": "string"
             },
             {
               "id": "ASSIGNMENT_ID_ORIGINAL_CUSTOM_FIELDS_PLACEHOLDER",
               "name": "original_custom_fields",
-              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.original_custom_fields }}",
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.original_custom_fields }}",
               "type": "array"
             },
             {
               "id": "ASSIGNMENT_ID_PAGE_NUMBER_PLACEHOLDER",
               "name": "page_number",
-              "value": null,
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.page_number }}",
               "type": "number"
             },
             {
               "id": "ASSIGNMENT_ID_PAGE_FILE_NAME_PLACEHOLDER",
               "name": "page_file_name",
-              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.page_file_name }}",
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.page_file_name }}",
               "type": "string"
             },
             {
               "id": "ASSIGNMENT_ID_IMAGE_BASE64_PLACEHOLDER",
               "name": "image_base64",
-              "value": "=={{ $('Base64-Metadaten ergänzen').item.json.image_base64 }}",
+              "value": "={{ $('Base64-Metadaten ergänzen').item.json.image_base64 }}",
               "type": "string"
             },
             {
               "id": "ASSIGNMENT_ID_GLM_RAW_PLACEHOLDER",
               "name": "glm_raw",
-              "value": "=={{ $json.message?.content ?? '' }}",
+              "value": "={{ $json.message?.content ?? '' }}",
               "type": "string"
             }
           ]
@@ -323,11 +323,29 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3104,
-        432
+        2880,
+        352
       ],
-      "id": "NODE_ID_PREPARE_GLM_RESULT_PLACEHOLDER",
+      "id": "NODE_ID_GLM_ERGEBNIS_VORBEREITEN_PLACEHOLDER",
       "name": "GLM-Ergebnis vorbereiten"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ ({\n  model: 'qwen3-vl:4b',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere ausschließlich die wichtigen visuellen Informationen dieser Dokumentseite.\n\nErkenne:\n- Logos und Symbole\n- Stempel\n- Unterschriften\n- handschriftliche Ergänzungen\n- Fotos, Abbildungen und Diagramme\n- markierte oder durchgestrichene Stellen\n- wichtige Layout-Hinweise\n\nRegeln:\n- Wiederhole den normalen Fließtext nicht unnötig.\n- Erfinde keine Informationen.\n- Leere Kategorien bleiben leere Arrays.\n- Gib ausschließlich gültiges JSON zurück.\n\nAntwortstruktur:\n\n{\n  \"symbols\": [],\n  \"stamps\": [],\n  \"signatures\": [],\n  \"handwriting\": [],\n  \"images\": [],\n  \"visual_notes\": [],\n  \"warnings\": []\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        3040,
+        464
+      ],
+      "id": "NODE_ID_QWEN_VISUELLE_ANALYSE_PLACEHOLDER",
+      "name": "Qwen visuelle Analyse"
     }
   ],
   "pinData": {},
@@ -493,6 +511,17 @@
       ]
     },
     "GLM-Ergebnis vorbereiten": {
+      "main": [
+        [
+          {
+            "node": "Qwen visuelle Analyse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qwen visuelle Analyse": {
       "main": [
         [
           {
