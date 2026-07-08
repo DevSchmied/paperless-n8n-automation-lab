@@ -371,11 +371,67 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2432,
+        2400,
         224
       ],
       "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUEHREN_PLACEHOLDER",
       "name": "Dokumentergebnis zusammenführen"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "CONDITION_ID_KI_ERGEBNIS_BRAUCHBAR_PLACEHOLDER",
+              "leftValue": "={{ $json.quality.usable }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2576,
+        224
+      ],
+      "id": "NODE_ID_KI_ERGEBNIS_BRAUCHBAR_PLACEHOLDER",
+      "name": "KI-Ergebnis brauchbar?"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=✅ KI-OCR-Test abgeschlossen\n\nDokument-ID: {{$json.document_id}}\nTitel: {{$json.title}}\nSeiten: {{$json.quality.page_count}}\n\nKI-Zeichen:\n{{$json.quality.ai_character_count}}\n\nUrsprüngliche OCR-Zeichen:\n{{$json.quality.original_character_count}}\n\nGesamtzeichen:\n{{$json.quality.combined_character_count}}\n\nGLM-JSON vollständig gültig:\n{{$json.quality.glm_json_valid_for_all_pages}}\n\nQwen-JSON vollständig gültig:\n{{$json.quality.qwen_json_valid_for_all_pages}}\n\nTabelle erkannt:\n{{$json.quality.markdown_table_detected}}\n\nVisuelle Inhalte erkannt:\n{{$json.quality.image_descriptions_present}}\n\n--- KI-Ergebnis Vorschau ---\n{{$json.ai_content.slice(0, 1800)}}\n\n--- Ursprünglicher Paperless-Text ---\n{{$json.original_paperless_content.slice(0, 600)}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2816,
+        128
+      ],
+      "id": "NODE_ID_KI_ERGEBNIS_VORSCHAU_PLACEHOLDER",
+      "name": "KI-Ergebnis Vorschau",
+      "webhookId": "WEBHOOK_ID_KI_ERGEBNIS_VORSCHAU_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -573,6 +629,28 @@
         [
           {
             "node": "Seiten einzeln verarbeiten",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dokumentergebnis zusammenführen": {
+      "main": [
+        [
+          {
+            "node": "KI-Ergebnis brauchbar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KI-Ergebnis brauchbar?": {
+      "main": [
+        [
+          {
+            "node": "KI-Ergebnis Vorschau",
             "type": "main",
             "index": 0
           }
