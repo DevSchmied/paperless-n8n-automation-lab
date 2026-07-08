@@ -134,7 +134,7 @@
     },
     {
       "parameters": {
-        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 200 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
+        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 150 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -240,13 +240,14 @@
         "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ ({\n  model: 'glm-ocr',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere diese einzelne Dokumentseite.\n\nAufgaben:\n1. Erkenne den vollständigen sichtbaren Text.\n2. Erhalte Überschriften, Absätze und Listen.\n3. Gib erkannte Tabellen als Markdown-Tabellen zurück.\n4. Beschreibe die Dokumentstruktur.\n5. Erfinde keine Inhalte.\n6. Markiere tatsächlich unlesbare Stellen mit [unlesbar].\n7. Wiederhole keine Inhalte unnötig.\n\nAntworte ausschließlich als gültiges JSON in dieser Struktur:\n\n{\n  \"text_markdown\": \"...\",\n  \"tables_markdown\": [],\n  \"document_structure\": [],\n  \"figures\": [],\n  \"warnings\": []\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
+        "jsonBody": "={{ ({\n  model: 'glm-ocr',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0,\n    num_ctx: 8192,\n    num_predict: 1024\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere diese einzelne Dokumentseite.\n\nAufgaben:\n1. Erkenne den vollständigen sichtbaren Text.\n2. Erhalte Überschriften, Absätze und Listen.\n3. Gib erkannte Tabellen als Markdown-Tabellen zurück.\n4. Beschreibe die Dokumentstruktur.\n5. Erfinde keine Inhalte.\n6. Markiere tatsächlich unlesbare Stellen mit [unlesbar].\n7. Wiederhole keine Inhalte unnötig.\n\nAntworte ausschließlich als gültiges JSON in dieser Struktur:\n\n{\n  \"text_markdown\": \"...\",\n  \"tables_markdown\": [],\n  \"document_structure\": [],\n  \"figures\": [],\n  \"warnings\": []\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
         "options": {
           "response": {
             "response": {
               "responseFormat": "json"
             }
-          }
+          },
+          "timeout": 900000
         }
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -335,8 +336,10 @@
         "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ ({\n  model: 'qwen3-vl:4b',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere ausschließlich die wichtigen visuellen Informationen dieser Dokumentseite.\n\nErkenne:\n- Logos und Symbole\n- Stempel\n- Unterschriften\n- handschriftliche Ergänzungen\n- Fotos, Abbildungen und Diagramme\n- markierte oder durchgestrichene Stellen\n- wichtige Layout-Hinweise\n\nRegeln:\n- Wiederhole den normalen Fließtext nicht unnötig.\n- Erfinde keine Informationen.\n- Leere Kategorien bleiben leere Arrays.\n- Gib ausschließlich gültiges JSON zurück.\n\nAntwortstruktur:\n\n{\n  \"symbols\": [],\n  \"stamps\": [],\n  \"signatures\": [],\n  \"handwriting\": [],\n  \"images\": [],\n  \"visual_notes\": [],\n  \"warnings\": []\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
-        "options": {}
+        "jsonBody": "={{ ({\n  model: 'qwen3-vl:4b',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0,\n    num_ctx: 8192,\n    num_predict: 512\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere ausschließlich die wichtigen visuellen Informationen dieser Dokumentseite.\n\nErkenne:\n- Logos und Symbole\n- Stempel\n- Unterschriften\n- handschriftliche Ergänzungen\n- Fotos, Abbildungen und Diagramme\n- markierte oder durchgestrichene Stellen\n- wichtige Layout-Hinweise\n\nRegeln:\n- Wiederhole den normalen Fließtext nicht unnötig.\n- Erfinde keine Informationen.\n- Leere Kategorien bleiben leere Arrays.\n- Gib ausschließlich gültiges JSON zurück.\n\nAntwortstruktur:\n\n{\n  \"symbols\": [],\n  \"stamps\": [],\n  \"signatures\": [],\n  \"handwriting\": [],\n  \"images\": [],\n  \"visual_notes\": [],\n  \"warnings\": []\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
+        "options": {
+          "timeout": 900000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
