@@ -10,7 +10,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        16,
+        0,
         320
       ],
       "id": "NODE_ID_WEBHOOK_PLACEHOLDER",
@@ -24,7 +24,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        192,
+        160,
         320
       ],
       "id": "NODE_ID_EXTRACT_ID_PLACEHOLDER",
@@ -40,7 +40,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        368,
+        336,
         320
       ],
       "id": "NODE_ID_DOKUMENTDATEN_HOLEN_PLACEHOLDER",
@@ -69,7 +69,7 @@
       "typeVersion": 4.4,
       "position": [
         880,
-        352
+        400
       ],
       "id": "NODE_ID_DATEI_LADEN_PLACEHOLDER",
       "name": "Datei laden",
@@ -463,13 +463,13 @@
         "genericAuthType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ ({\n  content: $json.combined_paperless_content,\n  custom_fields: [\n    ...($json.original_custom_fields ?? [])\n      .filter(field => Number(field.field) !== 12),\n\n    {\n      field: 12,\n      value: true\n    }\n  ]\n}) }}",
+        "jsonBody": "={{ ({\n  content: $json.combined_paperless_content,\n  custom_fields: $json.updated_custom_fields\n}) }}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        3040,
+        3232,
         176
       ],
       "id": "NODE_ID_PAPERLESS_CONTENT_AKTUALISIEREN_PLACEHOLDER",
@@ -534,11 +534,25 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        544,
+        512,
         320
       ],
       "id": "NODE_ID_KI_OCR_STATUS_PRUEFEN_PLACEHOLDER",
       "name": "KI-OCR-Status prüfen"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const kiOcrFieldId = 12;\n\nconst existing =\n  Array.isArray($json.original_custom_fields)\n    ? structuredClone($json.original_custom_fields)\n    : [];\n\nconst updated = existing.filter(\n  item => Number(item.field) !== kiOcrFieldId\n);\n\nupdated.push({\n  field: kiOcrFieldId,\n  value: true,\n});\n\nreturn {\n  json: {\n    ...$json,\n    updated_custom_fields: updated,\n  },\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3072,
+        176
+      ],
+      "id": "NODE_ID_CUSTOM_FIELDS_VORBEREITEN_PLACEHOLDER",
+      "name": "Custom Fields vorbereiten"
     }
   ],
   "pinData": {},
@@ -768,7 +782,7 @@
       "main": [
         [
           {
-            "node": "Paperless-content aktualisieren",
+            "node": "Custom Fields vorbereiten",
             "type": "main",
             "index": 0
           }
@@ -789,6 +803,11 @@
             "node": "Datei laden",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Dokumentdaten und Datei zusammenführen",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -798,6 +817,17 @@
         [
           {
             "node": "Bereits durch KI-OCR verarbeitet?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Custom Fields vorbereiten": {
+      "main": [
+        [
+          {
+            "node": "Paperless-content aktualisieren",
             "type": "main",
             "index": 0
           }
