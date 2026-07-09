@@ -192,8 +192,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        2400,
-        400
+        2384,
+        432
       ],
       "id": "NODE_ID_SEITENBILD_ZU_BASE64_PLACEHOLDER",
       "name": "Seitenbild zu Base64"
@@ -206,8 +206,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2576,
-        496
+        2560,
+        432
       ],
       "id": "NODE_ID_BASE64_METADATEN_ERGAENZEN_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
@@ -232,7 +232,7 @@
       "typeVersion": 4.4,
       "position": [
         2736,
-        400
+        432
       ],
       "id": "NODE_ID_GLM_OCR_SEITE_ANALYSIEREN_PLACEHOLDER",
       "name": "GLM-OCR Seite analysieren"
@@ -302,8 +302,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2896,
-        496
+        2912,
+        432
       ],
       "id": "NODE_ID_GLM_ERGEBNIS_VORBEREITEN_PLACEHOLDER",
       "name": "GLM-Ergebnis vorbereiten"
@@ -322,8 +322,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        3056,
-        400
+        3072,
+        432
       ],
       "id": "NODE_ID_QWEN_VISUELLE_ANALYSE_PLACEHOLDER",
       "name": "Qwen visuelle Analyse"
@@ -336,8 +336,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3232,
-        496
+        3264,
+        432
       ],
       "id": "NODE_ID_SEITENERGEBNIS_NORMALISIEREN_PLACEHOLDER",
       "name": "Seitenergebnis normalisieren"
@@ -391,72 +391,6 @@
     },
     {
       "parameters": {
-        "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=✅ KI-OCR-Test abgeschlossen\n\nDokument-ID: {{$json.document_id}}\nTitel: {{$json.title}}\nSeiten: {{$json.quality.page_count}}\n\nKI-Zeichen:\n{{$json.quality.ai_character_count}}\n\nUrsprüngliche OCR-Zeichen:\n{{$json.quality.original_character_count}}\n\nGesamtzeichen:\n{{$json.quality.combined_character_count}}\n\nGLM-JSON vollständig gültig:\n{{$json.quality.glm_json_valid_for_all_pages}}\n\nQwen-JSON vollständig gültig:\n{{$json.quality.qwen_json_valid_for_all_pages}}\n\nTabelle erkannt:\n{{$json.quality.markdown_table_detected}}\n\nVisuelle Inhalte erkannt:\n{{$json.quality.image_descriptions_present}}\n\n--- KI-Ergebnis Vorschau ---\n{{$json.ai_content.slice(0, 1800)}}\n\n--- Ursprünglicher Paperless-Text ---\n{{$json.original_paperless_content.slice(0, 600)}}",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2816,
-        48
-      ],
-      "id": "NODE_ID_KI_ERGEBNIS_VORSCHAU_PLACEHOLDER",
-      "name": "KI-Ergebnis Vorschau",
-      "webhookId": "WEBHOOK_ID_KI_ERGEBNIS_VORSCHAU_PLACEHOLDER",
-      "credentials": {
-        "telegramApi": {
-          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
-          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 3
-          },
-          "conditions": [
-            {
-              "id": "CONDITION_ID_CONTENT_WIRKLICH_UEBERSCHREIBEN_1_PLACEHOLDER",
-              "leftValue": "={{ $json.quality.usable }}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            },
-            {
-              "id": "CONDITION_ID_CONTENT_WIRKLICH_UEBERSCHREIBEN_2_PLACEHOLDER",
-              "leftValue": "={{ $json.write_back }}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.3,
-      "position": [
-        2816,
-        192
-      ],
-      "id": "NODE_ID_CONTENT_WIRKLICH_UEBERSCHREIBEN_PLACEHOLDER",
-      "name": "Content wirklich überschreiben?"
-    },
-    {
-      "parameters": {
         "method": "PATCH",
         "url": "=http://YOUR_PAPERLESS_HOST:8000/api/documents/{{$json.document_id}}/",
         "authentication": "genericCredentialType",
@@ -469,8 +403,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        3232,
-        176
+        2912,
+        192
       ],
       "id": "NODE_ID_PAPERLESS_CONTENT_AKTUALISIEREN_PLACEHOLDER",
       "name": "Paperless-content aktualisieren",
@@ -548,11 +482,46 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3072,
-        176
+        2752,
+        192
       ],
       "id": "NODE_ID_CUSTOM_FIELDS_VORBEREITEN_PLACEHOLDER",
       "name": "Custom Fields vorbereiten"
+    },
+    {
+      "parameters": {
+        "command": "=set -eu\n\nDOC_ID=\"{{ $('Dokumentergebnis zusammenführen').first().json.document_id }}\"\n\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\nrm -f \"$PDF\"\nrm -rf \"$DIR\"\n\nprintf 'Gelöscht:\\n%s\\n%s\\n' \"$PDF\" \"$DIR\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3232,
+        272
+      ],
+      "id": "NODE_ID_TEMPORAERE_OCR_DATEIEN_LOESCHEN_PLACEHOLDER",
+      "name": "Temporäre OCR-Dateien löschen"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=✅ KI-OCR-Test abgeschlossen\n\nDokument-ID: {{$json.document_id}}\nTitel: {{$json.title}}\nSeiten: {{$json.quality.page_count}}\n\nKI-Zeichen:\n{{$json.quality.ai_character_count}}\n\nUrsprüngliche OCR-Zeichen:\n{{$json.quality.original_character_count}}\n\nGesamtzeichen:\n{{$json.quality.combined_character_count}}\n\nGLM-JSON vollständig gültig:\n{{$json.quality.glm_json_valid_for_all_pages}}\n\nQwen-JSON vollständig gültig:\n{{$json.quality.qwen_json_valid_for_all_pages}}\n\nTabelle erkannt:\n{{$json.quality.markdown_table_detected}}\n\nVisuelle Inhalte erkannt:\n{{$json.quality.image_descriptions_present}}\n\n--- KI-Ergebnis Vorschau ---\n{{$json.ai_content.slice(0, 1800)}}\n\n--- Ursprünglicher Paperless-Text ---\n{{$json.original_paperless_content.slice(0, 600)}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3072,
+        192
+      ],
+      "id": "NODE_ID_TEST_KI_ERGEBNIS_PLACEHOLDER",
+      "name": "TEST KI-Ergebnis",
+      "webhookId": "WEBHOOK_ID_TEST_KI_ERGEBNIS_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -766,23 +735,14 @@
       "main": [
         [
           {
-            "node": "Content wirklich überschreiben?",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "KI-Ergebnis Vorschau",
+            "node": "Custom Fields vorbereiten",
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "Content wirklich überschreiben?": {
-      "main": [
+        ],
         [
           {
-            "node": "Custom Fields vorbereiten",
+            "node": "Temporäre OCR-Dateien löschen",
             "type": "main",
             "index": 0
           }
@@ -828,6 +788,28 @@
         [
           {
             "node": "Paperless-content aktualisieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paperless-content aktualisieren": {
+      "main": [
+        [
+          {
+            "node": "TEST KI-Ergebnis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TEST KI-Ergebnis": {
+      "main": [
+        [
+          {
+            "node": "Temporäre OCR-Dateien löschen",
             "type": "main",
             "index": 0
           }
