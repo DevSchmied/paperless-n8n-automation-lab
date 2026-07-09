@@ -54,7 +54,7 @@
     },
     {
       "parameters": {
-        "url": "=http://YOUR_PAPERLESS_HOST:8000/api/documents/{{$json.document_id}}/download/",
+        "url": "=http://YOUR_PAPERLESS_HOST:8000/api/documents/{{$json.id}}/download/",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpHeaderAuth",
         "options": {
