@@ -112,7 +112,7 @@
     },
     {
       "parameters": {
-        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 150 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
+        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 200 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
