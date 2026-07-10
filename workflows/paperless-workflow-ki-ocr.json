@@ -40,7 +40,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        336,
+        320,
         320
       ],
       "id": "NODE_ID_DOKUMENTDATEN_HOLEN_PLACEHOLDER",
@@ -144,7 +144,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1808,
+        1792,
         320
       ],
       "id": "NODE_ID_SEITENMETADATEN_ERGAENZEN_PLACEHOLDER",
@@ -164,7 +164,7 @@
       "type": "n8n-nodes-base.sort",
       "typeVersion": 1,
       "position": [
-        2016,
+        1952,
         320
       ],
       "id": "NODE_ID_SEITEN_SORTIEREN_PLACEHOLDER",
@@ -177,7 +177,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2224,
+        2144,
         320
       ],
       "id": "NODE_ID_SEITEN_EINZELN_VERARBEITEN_PLACEHOLDER",
@@ -192,8 +192,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        2384,
-        432
+        2336,
+        448
       ],
       "id": "NODE_ID_SEITENBILD_ZU_BASE64_PLACEHOLDER",
       "name": "Seitenbild zu Base64"
@@ -206,8 +206,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2560,
-        432
+        2528,
+        448
       ],
       "id": "NODE_ID_BASE64_METADATEN_ERGAENZEN_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
@@ -231,8 +231,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        2736,
-        432
+        2720,
+        448
       ],
       "id": "NODE_ID_GLM_OCR_SEITE_ANALYSIEREN_PLACEHOLDER",
       "name": "GLM-OCR Seite analysieren"
@@ -302,8 +302,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2912,
-        432
+        2896,
+        448
       ],
       "id": "NODE_ID_GLM_ERGEBNIS_VORBEREITEN_PLACEHOLDER",
       "name": "GLM-Ergebnis vorbereiten"
@@ -314,7 +314,7 @@
         "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ ({\n  model: 'qwen3-vl:4b-instruct',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0,\n    num_ctx: 8192,\n    num_predict: 512\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere ausschließlich die wichtigen visuellen Informationen dieser Dokumentseite.\n\nErkenne:\n- Logos und Symbole\n- Stempel\n- Unterschriften\n- handschriftliche Ergänzungen\n- Fotos, Abbildungen und Diagramme\n- markierte oder durchgestrichene Stellen\n- wichtige Layout-Hinweise\n\nRegeln:\n- Wiederhole den normalen Fließtext nicht unnötig.\n- Erfinde keine Informationen.\n- Leere Kategorien bleiben leere Arrays.\n- Gib ausschließlich gültiges JSON zurück.\n\nAntwortstruktur:\n\n{\n  \"symbols\": [],\n  \"stamps\": [],\n  \"signatures\": [],\n  \"handwriting\": [],\n  \"images\": [],\n  \"visual_notes\": [],\n  \"warnings\": []\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
+        "jsonBody": "={{ ({\n  model: 'qwen3-vl:4b-instruct',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0,\n    num_ctx: 8192,\n    num_predict: 512\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere ausschließlich die wichtigen visuellen Informationen dieser Dokumentseite.\n\nErkenne:\n- Logos und Symbole\n- Zeichen und geometrische Formen\n- Stempel\n- Unterschriften\n- handschriftliche Texte und Ergänzungen\n- Fotos, Bilder, Abbildungen und Diagramme\n- markierte oder durchgestrichene Stellen\n- wichtige Layout-Hinweise\n\nWichtige Regeln:\n- Benenne jedes erkannte Symbol mit einem eindeutigen deutschen Begriff im Feld \"label\".\n- Verwende im Feld \"symbol\" zusätzlich ein Zeichen oder Emoji, aber nur wenn es das erkannte Symbol zuverlässig darstellt.\n- Wenn kein passendes Zeichen oder Emoji verfügbar ist, setze \"symbol\" auf einen leeren String.\n- Der deutsche Begriff im Feld \"label\" muss auch ohne Emoji verständlich und über die Suche auffindbar sein.\n- Erfinde keine Symbole, Zeichen oder Texte.\n- Beschreibe nur tatsächlich sichtbare Inhalte.\n- Schreibe handschriftliche Texte möglichst vollständig und wortgetreu in das Feld \"text\".\n- Markiere unlesbare handschriftliche Stellen mit [unlesbar].\n- Wiederhole normalen gedruckten Fließtext nicht unnötig.\n- Leere Kategorien bleiben leere Arrays.\n- Gib ausschließlich gültiges JSON zurück.\n- Schreibe keinen zusätzlichen Text vor oder nach dem JSON.\n\nBeispiele für Symbole:\n\n{\"label\":\"Schlüssel\",\"symbol\":\"🔑\",\"description\":\"kleines Schlüsselsymbol\"}\n\n{\"label\":\"Stern\",\"symbol\":\"★\",\"description\":\"fünfzackiger Stern\"}\n\n{\"label\":\"Glocke\",\"symbol\":\"🔔\",\"description\":\"Glockensymbol\"}\n\n{\"label\":\"Pfeil nach rechts\",\"symbol\":\"→\",\"description\":\"Pfeil zeigt nach rechts\"}\n\nBeispiel ohne geeignetes Zeichen:\n\n{\"label\":\"Firmenlogo mit zwei verschlungenen Linien\",\"symbol\":\"\",\"description\":\"abstraktes Logo ohne eindeutig passendes Unicode-Zeichen\"}\n\nAntwortstruktur:\n\n{\n  \"symbols\": [\n    {\n      \"label\": \"deutsche und suchbare Bezeichnung\",\n      \"symbol\": \"passendes Zeichen oder leerer String\",\n      \"description\": \"kurze sachliche Beschreibung\"\n    }\n  ],\n  \"stamps\": [\n    {\n      \"label\": \"Art oder Bezeichnung des Stempels\",\n      \"text\": \"erkannter Text im Stempel\",\n      \"description\": \"Form, Farbe oder Position des Stempels\"\n    }\n  ],\n  \"signatures\": [\n    {\n      \"label\": \"Unterschrift\",\n      \"text\": \"lesbarer Name oder Text, falls vorhanden\",\n      \"description\": \"kurze sachliche Beschreibung der Unterschrift\"\n    }\n  ],\n  \"handwriting\": [\n    {\n      \"text\": \"vollständig erkannter handschriftlicher Text\",\n      \"description\": \"optionale Position oder Besonderheit\"\n    }\n  ],\n  \"images\": [\n    {\n      \"label\": \"deutsche Bezeichnung des Bildes oder Diagramms\",\n      \"description\": \"kurze sachliche Beschreibung des sichtbaren Inhalts\"\n    }\n  ],\n  \"visual_notes\": [\n    {\n      \"label\": \"deutsche Bezeichnung des visuellen Hinweises\",\n      \"description\": \"zum Beispiel markiert, eingekreist, unterstrichen oder durchgestrichen\"\n    }\n  ],\n  \"warnings\": [\n    \"Unsicherheit oder nicht eindeutig erkennbarer Inhalt\"\n  ]\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
         "options": {
           "timeout": 900000
         }
@@ -323,7 +323,7 @@
       "typeVersion": 4.4,
       "position": [
         3072,
-        432
+        448
       ],
       "id": "NODE_ID_QWEN_VISUELLE_ANALYSE_PLACEHOLDER",
       "name": "Qwen visuelle Analyse"
@@ -336,8 +336,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3264,
-        432
+        3248,
+        448
       ],
       "id": "NODE_ID_SEITENERGEBNIS_NORMALISIEREN_PLACEHOLDER",
       "name": "Seitenergebnis normalisieren"
@@ -349,7 +349,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2400,
+        2336,
         224
       ],
       "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUEHREN_PLACEHOLDER",
@@ -383,8 +383,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        2576,
-        224
+        2528,
+        272
       ],
       "id": "NODE_ID_KI_ERGEBNIS_BRAUCHBAR_PLACEHOLDER",
       "name": "KI-Ergebnis brauchbar?"
@@ -403,8 +403,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        2912,
-        192
+        2896,
+        176
       ],
       "id": "NODE_ID_PAPERLESS_CONTENT_AKTUALISIEREN_PLACEHOLDER",
       "name": "Paperless-content aktualisieren",
@@ -454,8 +454,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        864,
-        144
+        912,
+        176
       ],
       "id": "NODE_ID_DOKUMENT_WURDE_BEREITS_DURCH_KI_OCR_VERARBEITET_PLACEHOLDER",
       "name": "Dokument wurde bereits durch KI-OCR verarbeitet"
@@ -482,8 +482,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2752,
-        192
+        2720,
+        176
       ],
       "id": "NODE_ID_CUSTOM_FIELDS_VORBEREITEN_PLACEHOLDER",
       "name": "Custom Fields vorbereiten"
@@ -495,8 +495,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        3232,
-        272
+        3248,
+        288
       ],
       "id": "NODE_ID_TEMPORAERE_OCR_DATEIEN_LOESCHEN_PLACEHOLDER",
       "name": "Temporäre OCR-Dateien löschen"
@@ -510,8 +510,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        3072,
-        192
+        3056,
+        176
       ],
       "id": "NODE_ID_TEST_KI_ERGEBNIS_PLACEHOLDER",
       "name": "TEST KI-Ergebnis",
