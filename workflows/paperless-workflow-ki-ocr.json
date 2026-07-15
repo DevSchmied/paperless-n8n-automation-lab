@@ -112,7 +112,7 @@
     },
     {
       "parameters": {
-        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 150 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
+        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 200 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -220,7 +220,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7152,
+        7136,
         1520
       ],
       "id": "NODE_ID_SEITENERGEBNIS_NORMALISIEREN_PLACEHOLDER",
@@ -234,7 +234,7 @@
       "typeVersion": 2,
       "position": [
         6560,
-        1296
+        1248
       ],
       "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUEHREN_PLACEHOLDER",
       "name": "Dokumentergebnis zusammenführen"
@@ -267,8 +267,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        6752,
-        1344
+        6720,
+        1360
       ],
       "id": "NODE_ID_KI_ERGEBNIS_BRAUCHBAR_PLACEHOLDER",
       "name": "KI-Ergebnis brauchbar?"
@@ -287,8 +287,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        7120,
-        1248
+        7072,
+        1264
       ],
       "id": "NODE_ID_PAPERLESS_CONTENT_AKTUALISIEREN_PLACEHOLDER",
       "name": "Paperless-content aktualisieren",
@@ -366,8 +366,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6944,
-        1248
+        6880,
+        1264
       ],
       "id": "NODE_ID_CUSTOM_FIELDS_VORBEREITEN_PLACEHOLDER",
       "name": "Custom Fields vorbereiten"
@@ -379,8 +379,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        7472,
-        1360
+        7456,
+        1376
       ],
       "id": "NODE_ID_TEMPORAERE_OCR_DATEIEN_LOESCHEN_PLACEHOLDER",
       "name": "Temporäre OCR-Dateien löschen"
@@ -394,8 +394,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        7280,
-        1248
+        7264,
+        1264
       ],
       "id": "NODE_ID_TEST_KI_ERGEBNIS_PLACEHOLDER",
       "name": "TEST KI-Ergebnis",
@@ -421,7 +421,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        6960,
+        6944,
         1520
       ],
       "id": "NODE_ID_QWEN3_5_SEITE_ANALYSIEREN_PLACEHOLDER",
