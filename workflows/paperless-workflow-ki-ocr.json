@@ -388,7 +388,7 @@
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=✅ KI-OCR-Test abgeschlossen\n\nDokument-ID: {{$json.document_id}}\nSeiten: {{$json.quality.page_count}}\n\nKI-Zeichen:\n{{$json.quality.ai_character_count}}\n\nUrsprüngliche OCR-Zeichen:\n{{$json.quality.original_character_count}}\n\nGesamtzeichen:\n{{$json.quality.combined_character_count}}\n\nKI-JSON vollständig gültig:\n{{$json.quality.ai_json_valid_for_all_pages}}\n\nTabelle erkannt:\n{{$json.quality.markdown_table_detected}}\n\nVisuelle Inhalte erkannt:\n{{$json.quality.visual_descriptions_present}}",
+        "text": "=✅ KI-OCR-Test abgeschlossen\n\nDokument-ID: {{$('Dokumentergebnis zusammenführen').first().json.document_id}}\nSeiten: {{$('Dokumentergebnis zusammenführen').first().json.quality.page_count}}\n\nKI-Zeichen:\n{{$('Dokumentergebnis zusammenführen').first().json.quality.ai_character_count}}\n\nUrsprüngliche OCR-Zeichen:\n{{$('Dokumentergebnis zusammenführen').first().json.quality.original_character_count}}\n\nGesamtzeichen:\n{{$('Dokumentergebnis zusammenführen').first().json.quality.combined_character_count}}\n\nKI-JSON vollständig gültig:\n{{$('Dokumentergebnis zusammenführen').first().json.quality.ai_json_valid_for_all_pages}}\n\nTabelle erkannt:\n{{$('Dokumentergebnis zusammenführen').first().json.quality.markdown_table_detected}}\n\nVisuelle Inhalte erkannt:\n{{$('Dokumentergebnis zusammenführen').first().json.quality.visual_descriptions_present}}",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
