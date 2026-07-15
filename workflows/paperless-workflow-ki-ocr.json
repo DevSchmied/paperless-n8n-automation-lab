@@ -310,26 +310,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{ ({\n  model: 'qwen3-vl:4b-instruct',\n  stream: false,\n  keep_alive: 0,\n  options: {\n    temperature: 0,\n    num_ctx: 8192,\n    num_predict: 512\n  },\n  messages: [\n    {\n      role: 'user',\n      content: `Analysiere ausschließlich die wichtigen visuellen Informationen dieser Dokumentseite.\n\nErkenne:\n- Logos und Symbole\n- Zeichen und geometrische Formen\n- Stempel\n- Unterschriften\n- handschriftliche Texte und Ergänzungen\n- Fotos, Bilder, Abbildungen und Diagramme\n- markierte oder durchgestrichene Stellen\n- wichtige Layout-Hinweise\n\nWichtige Regeln:\n- Benenne jedes erkannte Symbol mit einem eindeutigen deutschen Begriff im Feld \"label\".\n- Verwende im Feld \"symbol\" zusätzlich ein Zeichen oder Emoji, aber nur wenn es das erkannte Symbol zuverlässig darstellt.\n- Wenn kein passendes Zeichen oder Emoji verfügbar ist, setze \"symbol\" auf einen leeren String.\n- Der deutsche Begriff im Feld \"label\" muss auch ohne Emoji verständlich und über die Suche auffindbar sein.\n- Erfinde keine Symbole, Zeichen oder Texte.\n- Beschreibe nur tatsächlich sichtbare Inhalte.\n- Schreibe handschriftliche Texte möglichst vollständig und wortgetreu in das Feld \"text\".\n- Markiere unlesbare handschriftliche Stellen mit [unlesbar].\n- Wiederhole normalen gedruckten Fließtext nicht unnötig.\n- Leere Kategorien bleiben leere Arrays.\n- Gib ausschließlich gültiges JSON zurück.\n- Schreibe keinen zusätzlichen Text vor oder nach dem JSON.\n\nBeispiele für Symbole:\n\n{\"label\":\"Schlüssel\",\"symbol\":\"🔑\",\"description\":\"kleines Schlüsselsymbol\"}\n\n{\"label\":\"Stern\",\"symbol\":\"★\",\"description\":\"fünfzackiger Stern\"}\n\n{\"label\":\"Glocke\",\"symbol\":\"🔔\",\"description\":\"Glockensymbol\"}\n\n{\"label\":\"Pfeil nach rechts\",\"symbol\":\"→\",\"description\":\"Pfeil zeigt nach rechts\"}\n\nBeispiel ohne geeignetes Zeichen:\n\n{\"label\":\"Firmenlogo mit zwei verschlungenen Linien\",\"symbol\":\"\",\"description\":\"abstraktes Logo ohne eindeutig passendes Unicode-Zeichen\"}\n\nAntwortstruktur:\n\n{\n  \"symbols\": [\n    {\n      \"label\": \"deutsche und suchbare Bezeichnung\",\n      \"symbol\": \"passendes Zeichen oder leerer String\",\n      \"description\": \"kurze sachliche Beschreibung\"\n    }\n  ],\n  \"stamps\": [\n    {\n      \"label\": \"Art oder Bezeichnung des Stempels\",\n      \"text\": \"erkannter Text im Stempel\",\n      \"description\": \"Form, Farbe oder Position des Stempels\"\n    }\n  ],\n  \"signatures\": [\n    {\n      \"label\": \"Unterschrift\",\n      \"text\": \"lesbarer Name oder Text, falls vorhanden\",\n      \"description\": \"kurze sachliche Beschreibung der Unterschrift\"\n    }\n  ],\n  \"handwriting\": [\n    {\n      \"text\": \"vollständig erkannter handschriftlicher Text\",\n      \"description\": \"optionale Position oder Besonderheit\"\n    }\n  ],\n  \"images\": [\n    {\n      \"label\": \"deutsche Bezeichnung des Bildes oder Diagramms\",\n      \"description\": \"kurze sachliche Beschreibung des sichtbaren Inhalts\"\n    }\n  ],\n  \"visual_notes\": [\n    {\n      \"label\": \"deutsche Bezeichnung des visuellen Hinweises\",\n      \"description\": \"zum Beispiel markiert, eingekreist, unterstrichen oder durchgestrichen\"\n    }\n  ],\n  \"warnings\": [\n    \"Unsicherheit oder nicht eindeutig erkennbarer Inhalt\"\n  ]\n}`,\n      images: [$json.image_base64]\n    }\n  ]\n}) }}",
-        "options": {
-          "timeout": 900000
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.4,
-      "position": [
-        7296,
-        1520
-      ],
-      "id": "NODE_ID_QWEN_VISUELLE_ANALYSE_PLACEHOLDER",
-      "name": "Qwen visuelle Analyse"
-    },
-    {
-      "parameters": {
         "mode": "runOnceForEachItem",
         "jsCode": "/**\n * Extrahiert einzelne vollständige JSON-Objekte.\n */\nfunction extractJsonObjects(text) {\n  const results = [];\n\n  let start = -1;\n  let depth = 0;\n  let inString = false;\n  let escaped = false;\n\n  for (let index = 0; index < text.length; index++) {\n    const char = text[index];\n\n    if (inString) {\n      if (escaped) {\n        escaped = false;\n        continue;\n      }\n\n      if (char === '\\\\') {\n        escaped = true;\n        continue;\n      }\n\n      if (char === '\"') {\n        inString = false;\n      }\n\n      continue;\n    }\n\n    if (char === '\"') {\n      inString = true;\n      continue;\n    }\n\n    if (char === '{') {\n      if (depth === 0) {\n        start = index;\n      }\n\n      depth++;\n      continue;\n    }\n\n    if (char === '}') {\n      depth--;\n\n      if (\n        depth === 0 &&\n        start >= 0\n      ) {\n        results.push(\n          text.slice(\n            start,\n            index + 1\n          )\n        );\n\n        start = -1;\n      }\n    }\n  }\n\n  return results;\n}\n\n/**\n * Repariert ungültige Backslashes in Modellantworten.\n */\nfunction repairInvalidJsonEscapes(value) {\n  return value.replace(\n    /\\\\(?![\"\\\\/bfnrtu])/g,\n    '\\\\\\\\'\n  );\n}\n\nfunction parseModelResult(value) {\n  const raw =\n    String(value ?? '').trim();\n\n  const cleaned = raw\n    .replace(/^```json\\s*/i, '')\n    .replace(/^```\\s*/i, '')\n    .replace(/\\s*```$/i, '')\n    .trim();\n\n  const candidates = [];\n\n  /*\n   * Zuerst jeden einzelnen Markdown-Codeblock prüfen.\n   * So wird bei mehrfach ausgegebenem JSON nur ein Block\n   * verwendet.\n   */\n  const fencedPattern =\n    /```(?:json)?\\s*([\\s\\S]*?)```/gi;\n\n  for (\n    const match of raw.matchAll(\n      fencedPattern\n    )\n  ) {\n    if (match[1]?.trim()) {\n      candidates.push(\n        match[1].trim()\n      );\n    }\n  }\n\n  /*\n   * Danach einzelne vollständige JSON-Objekte suchen.\n   */\n  candidates.push(\n    ...extractJsonObjects(cleaned)\n  );\n\n  /*\n   * Zum Schluss den gesamten bereinigten Inhalt prüfen.\n   */\n  candidates.push(cleaned);\n\n  const checked = new Set();\n\n  for (const candidate of candidates) {\n    const trimmed =\n      String(candidate ?? '').trim();\n\n    if (\n      !trimmed ||\n      checked.has(trimmed)\n    ) {\n      continue;\n    }\n\n    checked.add(trimmed);\n\n    const variants = [\n      trimmed,\n      repairInvalidJsonEscapes(trimmed),\n    ];\n\n    for (const variant of variants) {\n      try {\n        const parsed =\n          JSON.parse(variant);\n\n        return {\n          parsed: true,\n          data: parsed,\n          raw,\n        };\n      } catch {\n        // Nächste Variante prüfen.\n      }\n    }\n  }\n\n  return {\n    parsed: false,\n    data: {},\n    raw,\n  };\n}\n\nconst glmInput =\n  $('GLM-Ergebnis vorbereiten').item.json;\n\nconst glm =\n  parseModelResult(\n    glmInput.glm_raw\n  );\n\nconst qwen =\n  parseModelResult(\n    $json.message?.content\n  );\n\nreturn {\n  json: {\n    document_id:\n      glmInput.document_id,\n\n    title:\n      glmInput.title,\n\n    original_file_name:\n      glmInput.original_file_name,\n\n    original_content:\n      glmInput.original_content,\n\n    original_custom_fields:\n      glmInput.original_custom_fields,\n\n    page_number:\n      glmInput.page_number,\n\n    page_file_name:\n      glmInput.page_file_name,\n\n    glm_parsed:\n      glm.parsed,\n\n    glm:\n      glm.data,\n\n    // Nur für Fehlersuche behalten.\n    glm_raw:\n      glm.raw,\n\n    qwen_parsed:\n      qwen.parsed,\n\n    qwen:\n      qwen.data,\n\n    // Nur für Fehlersuche behalten.\n    qwen_raw:\n      qwen.raw,\n  },\n};"
       },
@@ -522,6 +502,26 @@
           "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ ({\n  model: 'qwen3.5:9b-q8_0',\n  stream: false,\n  think: false,\n  keep_alive: '10m',\n\n  format: {\n    type: 'object',\n    additionalProperties: false,\n\n    properties: {\n      text_markdown: {\n        type: 'string'\n      },\n\n      tables_markdown: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      },\n\n      document_structure: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      },\n\n      symbols: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            symbol: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'symbol',\n            'description'\n          ]\n        }\n      },\n\n      checkboxes: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            state: {\n              type: 'string',\n              enum: [\n                'checked',\n                'unchecked',\n                'unclear'\n              ]\n            },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'state',\n            'description'\n          ]\n        }\n      },\n\n      stamps: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      signatures: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      handwriting: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      images: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'description'\n          ]\n        }\n      },\n\n      figures: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            type: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'type',\n            'description'\n          ]\n        }\n      },\n\n      visual_notes: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'description'\n          ]\n        }\n      },\n\n      warnings: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      }\n    },\n\n    required: [\n      'text_markdown',\n      'tables_markdown',\n      'document_structure',\n      'symbols',\n      'checkboxes',\n      'stamps',\n      'signatures',\n      'handwriting',\n      'images',\n      'figures',\n      'visual_notes',\n      'warnings'\n    ]\n  },\n\n  options: {\n    temperature: 0.1,\n    num_ctx: 16384,\n    num_predict: 4096,\n    repeat_penalty: 1.1\n  },\n\n  messages: [\n    {\n      role: 'user',\n\n      content: `Analysiere diese einzelne Dokumentseite vollständig.\n\nDu übernimmst gleichzeitig:\n1. die vollständige Texterkennung,\n2. die Tabellen- und Strukturerkennung,\n3. die Erkennung visueller Elemente.\n\nTexterkennung:\n- Erkenne den vollständigen sichtbaren Text.\n- Erkenne gedruckten und handschriftlichen Text.\n- Erkenne Überschriften, Absätze und Listen.\n- Bewahre Namen, Zahlen, Beträge und Datumsangaben exakt.\n- Schreibe lesbare Handschrift vollständig in \"text_markdown\".\n- Erfasse Handschrift zusätzlich strukturiert in \"handwriting\".\n- Markiere tatsächlich unlesbare Wörter mit [unlesbar].\n- Erfinde keine Inhalte.\n\nTabellen:\n- Gib jede Tabelle vollständig als Markdown-Tabelle in \"tables_markdown\" zurück.\n- Jede Tabelle muss ein eigener String im Array sein.\n- Erhalte Zeilen, Spalten und Zellinhalte möglichst genau.\n- Wiederhole Tabellen nicht zusätzlich in \"text_markdown\".\n- Verwende ein leeres Array, wenn keine Tabelle vorhanden ist.\n- Beschreibe unsichere Tabellenstrukturen zusätzlich in \"warnings\".\n\nDokumentstruktur:\n- Erfasse Überschriften, Abschnitte, Listen, Formularbereiche und andere Strukturelemente in \"document_structure\".\n\nSymbole:\n- Erfasse Logos, Symbole, Zeichen und geometrische Formen.\n- Benenne jedes Element mit einem eindeutigen deutschen Begriff in \"label\".\n- Verwende in \"symbol\" nur ein Zeichen oder Emoji, wenn es zuverlässig passt.\n- Verwende andernfalls einen leeren String.\n- Schreibe alleinstehende grafische Symbole nicht in \"text_markdown\".\n\nKontrollkästchen:\n- Erfasse jedes sichtbare Kontrollkästchen in \"checkboxes\".\n- Verwende für \"state\" ausschließlich \"checked\", \"unchecked\" oder \"unclear\".\n- Erfasse die zugehörige Beschriftung möglichst genau in \"label\".\n\nWeitere visuelle Informationen:\n- Erfasse Stempel einschließlich lesbaren Stempeltexts.\n- Erfasse Unterschriften und lesbare Namen.\n- Erfasse Fotos und Bilder in \"images\".\n- Erfasse Diagramme, Schaubilder und Abbildungen in \"figures\".\n- Erfasse markierte, eingekreiste, unterstrichene oder durchgestrichene Stellen in \"visual_notes\".\n- Beschreibe nur tatsächlich sichtbare Inhalte.\n- Erfinde keine Symbole, Texte oder Bedeutungen.\n- Leere Kategorien bleiben leere Arrays.\n\nJSON-Regeln:\n- Gib genau ein einziges gültiges JSON-Objekt zurück.\n- Wiederhole das JSON-Objekt nicht.\n- Schreibe keinen Text vor oder nach dem JSON.\n- Verwende keine Markdown-Codeblöcke um das JSON.\n- Verwende Backslashes nur für gültige JSON-Escapes.\n- Verwende keine LaTeX-Befehle.\n- Verwende keine Konstruktionen wie \\\\xBullet, \\\\O oder \\\\circ.\n- Verwende ausschließlich die vorgegebene Antwortstruktur.\n\nAntwortstruktur:\n\n{\n  \"text_markdown\": \"\",\n  \"tables_markdown\": [],\n  \"document_structure\": [],\n  \"symbols\": [],\n  \"checkboxes\": [],\n  \"stamps\": [],\n  \"signatures\": [],\n  \"handwriting\": [],\n  \"images\": [],\n  \"figures\": [],\n  \"visual_notes\": [],\n  \"warnings\": []\n}`,\n\n      images: [\n        $json.image_base64\n      ]\n    }\n  ]\n}) }}",
+        "options": {
+          "timeout": 900000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        7296,
+        1520
+      ],
+      "id": "NODE_ID_QWEN3_5_SEITE_ANALYSIEREN_PLACEHOLDER",
+      "name": "Qwen3.5 Seite analysieren"
     }
   ],
   "pinData": {},
@@ -691,18 +691,7 @@
       "main": [
         [
           {
-            "node": "Qwen visuelle Analyse",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Qwen visuelle Analyse": {
-      "main": [
-        [
-          {
-            "node": "Seitenergebnis normalisieren",
+            "node": "Qwen3.5 Seite analysieren",
             "type": "main",
             "index": 0
           }
@@ -810,6 +799,17 @@
         [
           {
             "node": "Temporäre OCR-Dateien löschen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qwen3.5 Seite analysieren": {
+      "main": [
+        [
+          {
+            "node": "Seitenergebnis normalisieren",
             "type": "main",
             "index": 0
           }
