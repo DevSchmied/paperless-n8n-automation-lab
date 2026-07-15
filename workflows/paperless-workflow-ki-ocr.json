@@ -97,21 +97,6 @@
     },
     {
       "parameters": {
-        "operation": "write",
-        "fileName": "=/files/tmp/paperless-ki-ocr-{{$json.id}}.pdf",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        5520,
-        1392
-      ],
-      "id": "NODE_ID_PDF_TEMPORAER_SPEICHERN_PLACEHOLDER",
-      "name": "PDF temporär speichern"
-    },
-    {
-      "parameters": {
         "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 200 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
       },
       "type": "n8n-nodes-base.executeCommand",
@@ -120,22 +105,8 @@
         5696,
         1392
       ],
-      "id": "NODE_ID_PDF_IN_PNG_SEITEN_UMWANDELN_PLACEHOLDER",
-      "name": "PDF in PNG-Seiten umwandeln"
-    },
-    {
-      "parameters": {
-        "fileSelector": "={{ '/files/tmp/paperless-ki-ocr-' + $('Dokumentdaten und Datei zusammenführen').first().json.id + '/page-*.png' }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        5856,
-        1392
-      ],
-      "id": "NODE_ID_PNG_SEITEN_LADEN_PLACEHOLDER",
-      "name": "PNG-Seiten laden"
+      "id": "NODE_ID_PDF_IM_RAM_IN_PNG_SEITEN_UMWANDELN_PLACEHOLDER",
+      "name": "PDF im RAM in PNG-Seiten umwandeln"
     },
     {
       "parameters": {
@@ -382,8 +353,8 @@
         7456,
         1376
       ],
-      "id": "NODE_ID_TEMPORAERE_OCR_DATEIEN_LOESCHEN_PLACEHOLDER",
-      "name": "Temporäre OCR-Dateien löschen"
+      "id": "NODE_ID_TEMPORAERE_OCR_DATEIEN_AUS_RAM_LOESCHEN_PLACEHOLDER",
+      "name": "Temporäre OCR-Dateien aus RAM löschen"
     },
     {
       "parameters": {
@@ -413,7 +384,7 @@
         "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ ({\n  model: 'qwen3.5:9b-q8_0',\n  stream: false,\n  think: false,\n  keep_alive: '10m',\n\n  format: {\n    type: 'object',\n    additionalProperties: false,\n\n    properties: {\n      text_markdown: {\n        type: 'string'\n      },\n\n      tables_markdown: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      },\n\n      document_structure: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      },\n\n      symbols: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            symbol: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'symbol',\n            'description'\n          ]\n        }\n      },\n\n      checkboxes: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            state: {\n              type: 'string',\n              enum: [\n                'checked',\n                'unchecked',\n                'unclear'\n              ]\n            },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'state',\n            'description'\n          ]\n        }\n      },\n\n      stamps: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      signatures: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      handwriting: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      images: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'description'\n          ]\n        }\n      },\n\n      figures: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            type: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'type',\n            'description'\n          ]\n        }\n      },\n\n      visual_notes: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'description'\n          ]\n        }\n      },\n\n      warnings: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      }\n    },\n\n    required: [\n      'text_markdown',\n      'tables_markdown',\n      'document_structure',\n      'symbols',\n      'checkboxes',\n      'stamps',\n      'signatures',\n      'handwriting',\n      'images',\n      'figures',\n      'visual_notes',\n      'warnings'\n    ]\n  },\n\n  options: {\n    temperature: 0.1,\n    num_ctx: 16384,\n    num_predict: 4096,\n    repeat_penalty: 1.1\n  },\n\n  messages: [\n    {\n      role: 'user',\n\n      content: `Analysiere diese einzelne Dokumentseite vollständig.\n\nDu übernimmst gleichzeitig:\n1. die vollständige Texterkennung,\n2. die Tabellen- und Strukturerkennung,\n3. die Erkennung visueller Elemente.\n\nTexterkennung:\n- Erkenne den vollständigen sichtbaren Text.\n- Erkenne gedruckten und handschriftlichen Text.\n- Erkenne Überschriften, Absätze und Listen.\n- Bewahre Namen, Zahlen, Beträge und Datumsangaben exakt.\n- Schreibe lesbare Handschrift vollständig in \"text_markdown\".\n- Erfasse Handschrift zusätzlich strukturiert in \"handwriting\".\n- Markiere tatsächlich unlesbare Wörter mit [unlesbar].\n- Erfinde keine Inhalte.\n\nTabellen:\n- Gib jede Tabelle vollständig als Markdown-Tabelle in \"tables_markdown\" zurück.\n- Jede Tabelle muss ein eigener String im Array sein.\n- Erhalte Zeilen, Spalten und Zellinhalte möglichst genau.\n- Wiederhole Tabellen nicht zusätzlich in \"text_markdown\".\n- Verwende ein leeres Array, wenn keine Tabelle vorhanden ist.\n- Beschreibe unsichere Tabellenstrukturen zusätzlich in \"warnings\".\n\nDokumentstruktur:\n- Erfasse Überschriften, Abschnitte, Listen, Formularbereiche und andere Strukturelemente in \"document_structure\".\n\nSymbole:\n- Erfasse Logos, Symbole, Zeichen und geometrische Formen.\n- Benenne jedes Element mit einem eindeutigen deutschen Begriff in \"label\".\n- Verwende in \"symbol\" nur ein Zeichen oder Emoji, wenn es zuverlässig passt.\n- Verwende andernfalls einen leeren String.\n- Schreibe alleinstehende grafische Symbole nicht in \"text_markdown\".\n\nKontrollkästchen:\n- Erfasse jedes sichtbare Kontrollkästchen in \"checkboxes\".\n- Verwende für \"state\" ausschließlich \"checked\", \"unchecked\" oder \"unclear\".\n- Erfasse die zugehörige Beschriftung möglichst genau in \"label\".\n\nWeitere visuelle Informationen:\n- Erfasse Stempel einschließlich lesbaren Stempeltexts.\n- Erfasse Unterschriften und lesbare Namen.\n- Erfasse Fotos und Bilder in \"images\".\n- Erfasse Diagramme, Schaubilder und Abbildungen in \"figures\".\n- Erfasse markierte, eingekreiste, unterstrichene oder durchgestrichene Stellen in \"visual_notes\".\n- Beschreibe nur tatsächlich sichtbare Inhalte.\n- Erfinde keine Symbole, Texte oder Bedeutungen.\n- Leere Kategorien bleiben leere Arrays.\n\nJSON-Regeln:\n- Gib genau ein einziges gültiges JSON-Objekt zurück.\n- Wiederhole das JSON-Objekt nicht.\n- Schreibe keinen Text vor oder nach dem JSON.\n- Verwende keine Markdown-Codeblöcke um das JSON.\n- Verwende Backslashes nur für gültige JSON-Escapes.\n- Verwende keine LaTeX-Befehle.\n- Verwende keine Konstruktionen wie \\\\xBullet, \\\\O oder \\\\circ.\n- Verwende ausschließlich die vorgegebene Antwortstruktur.\n\nAntwortstruktur:\n\n{\n  \"text_markdown\": \"\",\n  \"tables_markdown\": [],\n  \"document_structure\": [],\n  \"symbols\": [],\n  \"checkboxes\": [],\n  \"stamps\": [],\n  \"signatures\": [],\n  \"handwriting\": [],\n  \"images\": [],\n  \"figures\": [],\n  \"visual_notes\": [],\n  \"warnings\": []\n}`,\n\n      images: [\n        $json.image_base64\n      ]\n    }\n  ]\n}) }}",
+        "jsonBody": "={{ ({\n  model: 'qwen3.5:9b-q8_0',\n  stream: false,\n  think: false,\n  keep_alive: '10m',\n\n  format: {\n    type: 'object',\n    additionalProperties: false,\n\n    properties: {\n      text_markdown: {\n        type: 'string'\n      },\n\n      tables_markdown: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      },\n\n      document_structure: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      },\n\n      symbols: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            symbol: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'symbol',\n            'description'\n          ]\n        }\n      },\n\n      checkboxes: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            state: {\n              type: 'string',\n              enum: [\n                'checked',\n                'unchecked',\n                'unclear'\n              ]\n            },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'state',\n            'description'\n          ]\n        }\n      },\n\n      stamps: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      signatures: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      handwriting: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            text: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'text',\n            'description'\n          ]\n        }\n      },\n\n      images: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'description'\n          ]\n        }\n      },\n\n      figures: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            type: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'type',\n            'description'\n          ]\n        }\n      },\n\n      visual_notes: {\n        type: 'array',\n        items: {\n          type: 'object',\n          additionalProperties: false,\n          properties: {\n            label: { type: 'string' },\n            description: { type: 'string' }\n          },\n          required: [\n            'label',\n            'description'\n          ]\n        }\n      },\n\n      warnings: {\n        type: 'array',\n        items: {\n          type: 'string'\n        }\n      }\n    },\n\n    required: [\n      'text_markdown',\n      'tables_markdown',\n      'document_structure',\n      'symbols',\n      'checkboxes',\n      'stamps',\n      'signatures',\n      'handwriting',\n      'images',\n      'figures',\n      'visual_notes',\n      'warnings'\n    ]\n  },\n\n  options: {\n    temperature: 0.1,\n    num_ctx: 16384,\n    num_predict: 4096,\n    repeat_penalty: 1.1\n  },\n\n  messages: [\n    {\n      role: 'user',\n\n      content: `Analysiere diese einzelne Dokumentseite vollständig.\n\nDu übernimmst gleichzeitig:\n1. die vollständige Texterkennung,\n2. die Tabellen- und Strukturerkennung,\n3. die Erkennung visueller Elemente.\n\nVerbindliche Regel für \"text_markdown\":\n- Wenn mindestens ein lesbares Zeichen vorhanden ist, darf \"text_markdown\" nicht leer sein.\n- Transkribiere dort den gesamten sichtbaren Text in natürlicher Lesereihenfolge.\n- Erfasse Überschriften, Absätze, Listen, Beschriftungen, einzelne Wörter, Namen, Zahlen, Beträge und Datumsangaben.\n- Erfasse auch den lesbaren Text von Handschrift, Stempeln und Unterschriften in \"text_markdown\".\n- \"document_structure\", \"handwriting\" und \"signatures\" sind zusätzliche strukturierte Angaben und ersetzen niemals die vollständige Transkription in \"text_markdown\".\n- Tabelleninhalte gehören ausschließlich nach \"tables_markdown\".\n- Alleinstehende grafische Symbole gehören nicht nach \"text_markdown\".\n\nTexterkennung:\n- Erkenne gedruckten und handschriftlichen Text vollständig.\n- Bewahre Schreibweise, Namen, Zahlen, Beträge und Datumsangaben möglichst exakt.\n- Markiere tatsächlich unlesbare Wörter mit [unlesbar].\n- Erfinde keine Inhalte.\n\nHandschrift:\n- Schreibe jeden lesbaren handschriftlichen Text vollständig in \"text_markdown\".\n- Erfasse ihn zusätzlich strukturiert in \"handwriting\".\n- Erfasse auch einzelne handschriftliche Wörter, Namen und Zahlen.\n- Ein handgeschriebener Name oder ein einzelnes Wort ist nicht automatisch eine Unterschrift.\n- Verwende \"signatures\" nur bei einer tatsächlich erkennbaren Unterschrift, beispielsweise auf einer Unterschriftslinie, unter einer Grußformel oder in einem eindeutigen Unterschriftsbereich.\n\nTabellen:\n- Gib jede Tabelle vollständig als Markdown-Tabelle in \"tables_markdown\" zurück.\n- Jede Tabelle muss ein eigener String im Array sein.\n- Erhalte Zeilen, Spalten und Zellinhalte möglichst genau.\n- Wiederhole Tabellen nicht zusätzlich in \"text_markdown\".\n- Verwende ein leeres Array, wenn keine Tabelle vorhanden ist.\n- Beschreibe unsichere Tabellenstrukturen zusätzlich in \"warnings\".\n\nDokumentstruktur:\n- Erfasse Überschriften, Abschnitte, Listen, Formularbereiche und andere Strukturelemente.\n- Beschreibe hier hauptsächlich die Struktur und verwende dieses Feld nicht als Ersatz für \"text_markdown\".\n- Wiederhole keine langen Textpassagen unnötig.\n\nSymbole:\n- Erfasse Logos, Symbole, Zeichen und geometrische Formen.\n- Benenne jedes Element mit einem eindeutigen deutschen Begriff in \"label\".\n- Verwende in \"symbol\" nur ein Zeichen oder Emoji, wenn es die sichtbare Form zuverlässig und genau darstellt.\n- Verwende für ein Quadrat oder Kästchen mit Kreuz bevorzugt \"☒\".\n- Verwende \"⊗\" nicht für ein Quadrat mit Kreuz, da dieses Zeichen einen Kreis mit Kreuz darstellt.\n- Wenn kein genau passendes Zeichen vorhanden ist, verwende einen leeren String.\n- Schreibe grafische Symbole nicht in \"text_markdown\".\n- Erfasse einfache geometrische Formen ausschließlich in \"symbols\" und nicht zusätzlich in \"figures\".\n\nKontrollkästchen:\n- Erfasse jedes sichtbare Kontrollkästchen in \"checkboxes\".\n- Verwende für \"state\" ausschließlich \"checked\", \"unchecked\" oder \"unclear\".\n- Erfasse die zugehörige Beschriftung möglichst genau in \"label\".\n\nWeitere visuelle Informationen:\n- Erfasse Stempel einschließlich des lesbaren Stempeltexts.\n- Erfasse nur tatsächlich erkennbare Unterschriften in \"signatures\".\n- Erfasse Fotos und Bilder in \"images\".\n- Verwende \"figures\" nur für Diagramme, Schaubilder, technische Abbildungen oder zusammengesetzte Darstellungen.\n- Wiederhole einfache Formen aus \"symbols\" nicht zusätzlich in \"figures\".\n- Erfasse markierte, eingekreiste, unterstrichene oder durchgestrichene Stellen in \"visual_notes\".\n- Beschreibe nur tatsächlich sichtbare Inhalte.\n- Erfinde keine Symbole, Texte oder Bedeutungen.\n- Leere Kategorien bleiben leere Arrays.\n\nJSON-Regeln:\n- Gib genau ein einziges gültiges JSON-Objekt zurück.\n- Wiederhole das JSON-Objekt nicht.\n- Schreibe keinen Text vor oder nach dem JSON.\n- Verwende keine Markdown-Codeblöcke um das JSON.\n- Verwende Backslashes nur für gültige JSON-Escapes.\n- Verwende keine LaTeX-Befehle.\n- Verwende keine Konstruktionen wie \\\\xBullet, \\\\O oder \\\\circ.\n- Verwende ausschließlich die vorgegebene Antwortstruktur.\n\nAntwortstruktur:\n\n{\n  \"text_markdown\": \"\",\n  \"tables_markdown\": [],\n  \"document_structure\": [],\n  \"symbols\": [],\n  \"checkboxes\": [],\n  \"stamps\": [],\n  \"signatures\": [],\n  \"handwriting\": [],\n  \"images\": [],\n  \"figures\": [],\n  \"visual_notes\": [],\n  \"warnings\": []\n}`,\n\n      images: [\n        $json.image_base64\n      ]\n    }\n  ]\n}) }}",
         "options": {
           "timeout": 900000
         }
@@ -426,6 +397,36 @@
       ],
       "id": "NODE_ID_QWEN3_5_SEITE_ANALYSIEREN_PLACEHOLDER",
       "name": "Qwen3.5 Seite analysieren"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/files/tmp/paperless-ki-ocr-{{$json.id}}.pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        5520,
+        1392
+      ],
+      "id": "NODE_ID_PDF_TEMPORAER_IM_RAM_SPEICHERN_PLACEHOLDER",
+      "name": "PDF temporär im RAM speichern",
+      "notes": "Der Zielpfad /files/tmp ist ein flüchtiges tmpfs im RAM und kein persistenter Festplattenspeicher."
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ '/files/tmp/paperless-ki-ocr-' + $('Dokumentdaten und Datei zusammenführen').first().json.id + '/page-*.png' }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        5856,
+        1392
+      ],
+      "id": "NODE_ID_PNG_SEITEN_AUS_RAM_LADEN_PLACEHOLDER",
+      "name": "PNG-Seiten aus RAM laden"
     }
   ],
   "pinData": {},
@@ -478,40 +479,18 @@
       "main": [
         [
           {
-            "node": "PDF temporär speichern",
+            "node": "PDF temporär im RAM speichern",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "PDF temporär speichern": {
+    "PDF im RAM in PNG-Seiten umwandeln": {
       "main": [
         [
           {
-            "node": "PDF in PNG-Seiten umwandeln",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PDF in PNG-Seiten umwandeln": {
-      "main": [
-        [
-          {
-            "node": "PNG-Seiten laden",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "PNG-Seiten laden": {
-      "main": [
-        [
-          {
-            "node": "Seitenmetadaten ergänzen",
+            "node": "PNG-Seiten aus RAM laden",
             "type": "main",
             "index": 0
           }
@@ -613,7 +592,7 @@
         ],
         [
           {
-            "node": "Temporäre OCR-Dateien löschen",
+            "node": "Temporäre OCR-Dateien aus RAM löschen",
             "type": "main",
             "index": 0
           }
@@ -680,7 +659,7 @@
       "main": [
         [
           {
-            "node": "Temporäre OCR-Dateien löschen",
+            "node": "Temporäre OCR-Dateien aus RAM löschen",
             "type": "main",
             "index": 0
           }
@@ -692,6 +671,28 @@
         [
           {
             "node": "Seitenergebnis normalisieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF temporär im RAM speichern": {
+      "main": [
+        [
+          {
+            "node": "PDF im RAM in PNG-Seiten umwandeln",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PNG-Seiten aus RAM laden": {
+      "main": [
+        [
+          {
+            "node": "Seitenmetadaten ergänzen",
             "type": "main",
             "index": 0
           }
