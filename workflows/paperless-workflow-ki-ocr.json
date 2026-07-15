@@ -10,8 +10,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        0,
-        320
+        4224,
+        1392
       ],
       "id": "NODE_ID_WEBHOOK_PLACEHOLDER",
       "name": "Webhook",
@@ -24,8 +24,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        160,
-        320
+        4384,
+        1392
       ],
       "id": "NODE_ID_EXTRACT_ID_PLACEHOLDER",
       "name": "Extract ID"
@@ -40,8 +40,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        320,
-        320
+        4544,
+        1392
       ],
       "id": "NODE_ID_DOKUMENTDATEN_HOLEN_PLACEHOLDER",
       "name": "Dokumentdaten holen",
@@ -68,8 +68,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        880,
-        400
+        5104,
+        1472
       ],
       "id": "NODE_ID_DATEI_LADEN_PLACEHOLDER",
       "name": "Datei laden",
@@ -89,8 +89,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1104,
-        320
+        5328,
+        1392
       ],
       "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFUEHREN_PLACEHOLDER",
       "name": "Dokumentdaten und Datei zusammenführen"
@@ -104,21 +104,21 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        1296,
-        320
+        5520,
+        1392
       ],
       "id": "NODE_ID_PDF_TEMPORAER_SPEICHERN_PLACEHOLDER",
       "name": "PDF temporär speichern"
     },
     {
       "parameters": {
-        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 200 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
+        "command": "=set -eu\n\nDOC_ID=\"{{ $json.id }}\"\nPDF=\"/files/tmp/paperless-ki-ocr-${DOC_ID}.pdf\"\nDIR=\"/files/tmp/paperless-ki-ocr-${DOC_ID}\"\n\ntest -f \"$PDF\"\n\nrm -rf \"$DIR\"\nmkdir -p \"$DIR\"\n\npdftoppm \\\n  -png \\\n  -r 150 \\\n  \"$PDF\" \\\n  \"$DIR/page\"\n\nPAGE_COUNT=\"$(find \"$DIR\" -maxdepth 1 -type f -name 'page-*.png' | wc -l | tr -d ' ')\"\n\ntest \"$PAGE_COUNT\" -gt 0\n\nprintf 'document_id=%s\\npage_count=%s\\ndirectory=%s\\n' \\\n  \"$DOC_ID\" \\\n  \"$PAGE_COUNT\" \\\n  \"$DIR\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1472,
-        320
+        5696,
+        1392
       ],
       "id": "NODE_ID_PDF_IN_PNG_SEITEN_UMWANDELN_PLACEHOLDER",
       "name": "PDF in PNG-Seiten umwandeln"
@@ -131,8 +131,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1.1,
       "position": [
-        1632,
-        320
+        5856,
+        1392
       ],
       "id": "NODE_ID_PNG_SEITEN_LADEN_PLACEHOLDER",
       "name": "PNG-Seiten laden"
@@ -144,8 +144,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1792,
-        320
+        6016,
+        1392
       ],
       "id": "NODE_ID_SEITENMETADATEN_ERGAENZEN_PLACEHOLDER",
       "name": "Seitenmetadaten ergänzen"
@@ -164,8 +164,8 @@
       "type": "n8n-nodes-base.sort",
       "typeVersion": 1,
       "position": [
-        1952,
-        320
+        6176,
+        1392
       ],
       "id": "NODE_ID_SEITEN_SORTIEREN_PLACEHOLDER",
       "name": "Seiten sortieren"
@@ -177,8 +177,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2144,
-        320
+        6368,
+        1392
       ],
       "id": "NODE_ID_SEITEN_EINZELN_VERARBEITEN_PLACEHOLDER",
       "name": "Seiten einzeln verarbeiten"
@@ -192,8 +192,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        2336,
-        448
+        6560,
+        1520
       ],
       "id": "NODE_ID_SEITENBILD_ZU_BASE64_PLACEHOLDER",
       "name": "Seitenbild zu Base64"
@@ -206,8 +206,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2528,
-        448
+        6752,
+        1520
       ],
       "id": "NODE_ID_BASE64_METADATEN_ERGAENZEN_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
@@ -231,8 +231,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        2720,
-        448
+        6944,
+        1520
       ],
       "id": "NODE_ID_GLM_OCR_SEITE_ANALYSIEREN_PLACEHOLDER",
       "name": "GLM-OCR Seite analysieren"
@@ -242,55 +242,55 @@
         "assignments": {
           "assignments": [
             {
-              "id": "ASSIGNMENT_ID_DOCUMENT_ID_1_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_DOCUMENT_ID_1_PLACEHOLDER",
               "name": "document_id",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.document_id }}",
               "type": "number"
             },
             {
-              "id": "ASSIGNMENT_ID_TITLE_2_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_TITLE_2_PLACEHOLDER",
               "name": "title",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.title }}",
               "type": "string"
             },
             {
-              "id": "ASSIGNMENT_ID_ORIGINAL_FILE_NAME_3_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_ORIGINAL_FILE_NAME_3_PLACEHOLDER",
               "name": "original_file_name",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.original_file_name }}",
               "type": "string"
             },
             {
-              "id": "ASSIGNMENT_ID_ORIGINAL_CONTENT_4_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_ORIGINAL_CONTENT_4_PLACEHOLDER",
               "name": "original_content",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.original_content }}",
               "type": "string"
             },
             {
-              "id": "ASSIGNMENT_ID_ORIGINAL_CUSTOM_FIELDS_5_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_ORIGINAL_CUSTOM_FIELDS_5_PLACEHOLDER",
               "name": "original_custom_fields",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.original_custom_fields }}",
               "type": "array"
             },
             {
-              "id": "ASSIGNMENT_ID_PAGE_NUMBER_6_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_PAGE_NUMBER_6_PLACEHOLDER",
               "name": "page_number",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.page_number }}",
               "type": "number"
             },
             {
-              "id": "ASSIGNMENT_ID_PAGE_FILE_NAME_7_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_PAGE_FILE_NAME_7_PLACEHOLDER",
               "name": "page_file_name",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.page_file_name }}",
               "type": "string"
             },
             {
-              "id": "ASSIGNMENT_ID_IMAGE_BASE64_8_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_IMAGE_BASE64_8_PLACEHOLDER",
               "name": "image_base64",
               "value": "={{ $('Base64-Metadaten ergänzen').item.json.image_base64 }}",
               "type": "string"
             },
             {
-              "id": "ASSIGNMENT_ID_GLM_RAW_9_PLACEHOLDER",
+              "id": "ASSIGNMENT_ID_GLM_ERGEBNIS_VORBEREITEN_GLM_RAW_9_PLACEHOLDER",
               "name": "glm_raw",
               "value": "={{ $json.message?.content ?? '' }}",
               "type": "string"
@@ -302,8 +302,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2896,
-        448
+        7120,
+        1520
       ],
       "id": "NODE_ID_GLM_ERGEBNIS_VORBEREITEN_PLACEHOLDER",
       "name": "GLM-Ergebnis vorbereiten"
@@ -322,8 +322,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        3072,
-        448
+        7296,
+        1520
       ],
       "id": "NODE_ID_QWEN_VISUELLE_ANALYSE_PLACEHOLDER",
       "name": "Qwen visuelle Analyse"
@@ -336,21 +336,21 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3248,
-        448
+        7472,
+        1520
       ],
       "id": "NODE_ID_SEITENERGEBNIS_NORMALISIEREN_PLACEHOLDER",
       "name": "Seitenergebnis normalisieren"
     },
     {
       "parameters": {
-        "jsCode": "/**\n * Pro Seitennummer darf nur ein Ergebnis weiterverarbeitet\n * werden.\n *\n * Falls der Loop dieselbe Seite mehrfach zurückgibt,\n * überschreibt das neueste Ergebnis das vorherige.\n */\nconst pagesByNumber = new Map();\n\nfor (const item of $input.all()) {\n  const page = item.json;\n\n  const pageNumber =\n    Number(page.page_number);\n\n  if (!Number.isFinite(pageNumber)) {\n    continue;\n  }\n\n  pagesByNumber.set(\n    pageNumber,\n    page\n  );\n}\n\nconst pages = [\n  ...pagesByNumber.values(),\n].sort(\n  (a, b) =>\n    Number(a.page_number) -\n    Number(b.page_number)\n);\n\nfunction toArray(value) {\n  return Array.isArray(value)\n    ? value.filter(value =>\n        value !== null &&\n        value !== undefined &&\n        String(value).trim() !== ''\n      )\n    : [];\n}\n\n/**\n * Bei einer erneuten Verarbeitung wird nur der tatsächlich\n * ursprüngliche Paperless-OCR-Inhalt übernommen.\n */\nfunction extractOriginalPaperlessContent(content) {\n  const value = String(content ?? '').trim();\n\n  const marker =\n    '=== Ursprünglicher Paperless-OCR-Inhalt ===';\n\n  if (!value.includes(marker)) {\n    return value;\n  }\n\n  return value\n    .split(marker)\n    .slice(1)\n    .join(marker)\n    .trim();\n}\n\n/**\n * Fallback für Modellantworten, die trotz des neuen Prompts\n * nur ein Symbol oder Emoji als String zurückgeben.\n */\nconst symbolNames = {\n  '❤️': 'Herz',\n  '❤': 'Herz',\n  '♥': 'Herz',\n  '♡': 'Herz',\n\n  '△': 'Dreieck',\n  '▲': 'Dreieck',\n  '▽': 'Dreieck',\n  '▼': 'Dreieck',\n\n  '□': 'Quadrat',\n  '■': 'Quadrat',\n  '□×': 'Quadrat mit Kreuz',\n  '☒': 'Quadrat mit Kreuz',\n  '⊠': 'Quadrat mit Kreuz',\n\n  '○': 'Kreis',\n  '◯': 'Kreis',\n  '●': 'Kreis',\n\n  '×': 'Kreuz',\n  '✕': 'Kreuz',\n  '✖': 'Kreuz',\n\n  '✓': 'Häkchen',\n  '✔': 'Häkchen',\n\n  '→': 'Pfeil nach rechts',\n  '←': 'Pfeil nach links',\n  '↑': 'Pfeil nach oben',\n  '↓': 'Pfeil nach unten',\n};\n\n/**\n * Wandelt alte String-Antworten und neue Objekt-Antworten\n * in eine gemeinsame Struktur um.\n */\nfunction normalizeVisualItem(value, fallbackType) {\n  if (\n    value === null ||\n    value === undefined\n  ) {\n    return null;\n  }\n\n  if (typeof value === 'string') {\n    const raw = value.trim();\n\n    if (!raw) {\n      return null;\n    }\n\n    return {\n      type: fallbackType,\n      label:\n        symbolNames[raw] ??\n        raw,\n      symbol:\n        symbolNames[raw]\n          ? raw\n          : '',\n      text: '',\n      description: '',\n    };\n  }\n\n  if (typeof value === 'object') {\n    return {\n      type:\n        String(\n          value.type ??\n          fallbackType\n        ).trim(),\n\n      label:\n        String(\n          value.label ??\n          value.name ??\n          ''\n        ).trim(),\n\n      symbol:\n        String(\n          value.symbol ??\n          value.emoji ??\n          value.glyph ??\n          ''\n        ).trim(),\n\n      text:\n        String(\n          value.text ??\n          value.transcription ??\n          ''\n        ).trim(),\n\n      description:\n        String(\n          value.description ??\n          value.details ??\n          ''\n        ).trim(),\n    };\n  }\n\n  return null;\n}\n\nfunction formatSymbol(item) {\n  const label =\n    item.label ||\n    symbolNames[item.symbol] ||\n    'Unbekanntes Symbol';\n\n  const parts = [label];\n\n  if (item.symbol) {\n    parts.push(`(Symbol: ${item.symbol})`);\n  }\n\n  if (item.description) {\n    parts.push(`– ${item.description}`);\n  }\n\n  return parts.join(' ');\n}\n\nfunction formatHandwriting(item) {\n  const text =\n    item.text ||\n    item.label ||\n    item.description;\n\n  if (!text) {\n    return null;\n  }\n\n  return `${text} (handgeschriebener Text)`;\n}\n\nfunction formatVisualObject(item, typeLabel) {\n  const mainText =\n    item.label ||\n    item.text ||\n    typeLabel;\n\n  const details = [];\n\n  if (\n    item.text &&\n    item.text !== mainText\n  ) {\n    details.push(`Text: ${item.text}`);\n  }\n\n  if (item.description) {\n    details.push(item.description);\n  }\n\n  if (item.symbol) {\n    details.push(`Symbol: ${item.symbol}`);\n  }\n\n  if (details.length === 0) {\n    return `${mainText} (${typeLabel})`;\n  }\n\n  return (\n    `${mainText} (${typeLabel}: ` +\n    `${details.join('; ')})`\n  );\n}\n\nconst textParts = [];\nconst tables = [];\nconst documentStructures = [];\n\n/**\n * Hier werden die neuen suchbaren visuellen Beschreibungen\n * pro Seite gesammelt.\n */\nconst searchableVisualSections = [];\n\nconst warnings = [];\n\nfor (const page of pages) {\n  if (!page.glm_parsed) {\n    warnings.push(\n      `GLM-OCR-Antwort auf Seite ${page.page_number} ` +\n      `konnte nicht als JSON verarbeitet werden.`\n    );\n  }\n\n  if (!page.qwen_parsed) {\n    warnings.push(\n      `Qwen-Antwort auf Seite ${page.page_number} ` +\n      `konnte nicht als JSON verarbeitet werden.`\n    );\n  }\n\n  const glmText =\n    page.glm?.text_markdown ||\n    page.glm?.text ||\n    '';\n\n  if (String(glmText).trim()) {\n    textParts.push(\n      `## Seite ${page.page_number}\\n\\n` +\n      String(glmText).trim()\n    );\n  }\n  \n  for (\n    const table of toArray(\n      page.glm?.tables_markdown\n    )\n  ) {\n    tables.push(\n      `### Tabelle auf Seite ${page.page_number}\\n\\n` +\n      String(table).trim()\n    );\n  }\n\n  const structures =\n    toArray(\n      page.glm?.document_structure\n    );\n\n  if (structures.length > 0) {\n    documentStructures.push(\n      `### Struktur auf Seite ${page.page_number}\\n\\n` +\n      structures\n        .map(value => `- ${value}`)\n        .join('\\n')\n    );\n  }\n\n  const pageVisualEntries = [];\n\n  /*\n   * Symbole und geometrische Formen\n   */\n  for (\n    const rawSymbol of toArray(\n      page.qwen?.symbols\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawSymbol,\n        'symbol'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatSymbol(item)\n    );\n  }\n\n  /*\n   * Handschriftliche Texte\n   */\n  for (\n    const rawHandwriting of toArray(\n      page.qwen?.handwriting\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawHandwriting,\n        'handwriting'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    const formatted =\n      formatHandwriting(item);\n\n    if (formatted) {\n      pageVisualEntries.push(formatted);\n    }\n  }\n\n  /*\n   * Stempel\n   */\n  for (\n    const rawStamp of toArray(\n      page.qwen?.stamps\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawStamp,\n        'stamp'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'Stempel'\n      )\n    );\n  }\n\n  /*\n   * Unterschriften\n   */\n  for (\n    const rawSignature of toArray(\n      page.qwen?.signatures\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawSignature,\n        'signature'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'Unterschrift'\n      )\n    );\n  }\n\n  /*\n   * Bilder, Fotos, Diagramme und Abbildungen\n   */\n  for (\n    const rawImage of toArray(\n      page.qwen?.images\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawImage,\n        'image'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'Bild oder Abbildung'\n      )\n    );\n  }\n\n  /*\n   * Sonstige visuelle Hinweise\n   */\n  for (\n    const rawNote of toArray(\n      page.qwen?.visual_notes\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawNote,\n        'visual_note'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'visueller Hinweis'\n      )\n    );\n  }\n\n  if (pageVisualEntries.length > 0) {\n    searchableVisualSections.push(\n      `## Seite ${page.page_number}\\n\\n` +\n      pageVisualEntries\n        .map(\n          (value, index) =>\n            `${index + 1}. ${value}`\n        )\n        .join('\\n\\n')\n    );\n  }\n\n  warnings.push(\n    ...toArray(page.glm?.warnings),\n    ...toArray(page.qwen?.warnings)\n  );\n}\n\nconst aiSections = [];\n\nif (textParts.length > 0) {\n  aiSections.push(\n    `# Dokumenttext\\n\\n` +\n    textParts.join('\\n\\n')\n  );\n}\n\nif (tables.length > 0) {\n  aiSections.push(\n    `# Tabellen\\n\\n` +\n    tables.join('\\n\\n')\n  );\n}\n\nif (documentStructures.length > 0) {\n  aiSections.push(\n    `# Dokumentstruktur\\n\\n` +\n    documentStructures.join('\\n\\n')\n  );\n}\n\nif (searchableVisualSections.length > 0) {\n  aiSections.push(\n    `# Erkannte Symbole, visuelle Elemente und handgeschriebene Texte\\n\\n` +\n    searchableVisualSections.join('\\n\\n')\n  );\n}\n\n// Ausschließlich neu erzeugter KI-/Vision-Inhalt.\nconst aiContent =\n  aiSections.join('\\n\\n').trim();\n\n// Tatsächlich ursprünglicher Paperless-OCR-Inhalt.\nconst originalPaperlessContent =\n  extractOriginalPaperlessContent(\n    pages[0]?.original_content\n  );\n\nconst originalSection =\n  originalPaperlessContent ||\n  '[Kein ursprünglicher Paperless-OCR-Inhalt vorhanden]';\n\n// Dieser Inhalt wird später nach Paperless geschrieben.\nconst combinedPaperlessContent = [\n  '=== KI-OCR / Vision-Ergebnis ===',\n  '',\n  aiContent ||\n    '[Kein brauchbares KI-OCR-Ergebnis erzeugt]',\n  '',\n  '=== Ursprünglicher Paperless-OCR-Inhalt ===',\n  '',\n  originalSection,\n]\n  .join('\\n')\n  .trim();\n\n/**\n * Qualitätsprüfung ausschließlich anhand des\n * neuen KI-/Vision-Inhalts.\n */\nconst normalizedAiContent =\n  aiContent.toLowerCase();\n\nconst contentWithoutErrorPhrases =\n  normalizedAiContent\n    .replace(/\\[?unlesbar\\]?/gi, '')\n    .replace(/keine daten/gi, '')\n    .replace(/nicht erkennbar/gi, '')\n    .replace(/kein text erkannt/gi, '')\n    .replace(/^#+.*$/gm, '')\n    .replace(/\\s+/g, '');\n\nconst quality = {\n  usable:\n    pages.length > 0 &&\n    aiContent.length >= 100 &&\n    contentWithoutErrorPhrases.length >= 30,\n\n  ai_character_count:\n    aiContent.length,\n\n  original_character_count:\n    originalPaperlessContent.length,\n\n  combined_character_count:\n    combinedPaperlessContent.length,\n\n  page_count:\n    pages.length,\n\n  glm_json_valid_for_all_pages:\n    pages.every(\n      page =>\n        page.glm_parsed === true\n    ),\n\n  qwen_json_valid_for_all_pages:\n    pages.every(\n      page =>\n        page.qwen_parsed === true\n    ),\n\n  markdown_table_detected:\n    tables.length > 0,\n\n  image_descriptions_present:\n    searchableVisualSections.length > 0,\n\n  warnings,\n};\n\nreturn [\n  {\n    json: {\n      document_id:\n        pages[0]?.document_id,\n\n      title:\n        pages[0]?.title ?? '',\n\n      original_file_name:\n        pages[0]?.original_file_name ?? '',\n\n      original_custom_fields:\n        pages[0]?.original_custom_fields ?? [],\n\n      pages,\n\n      ai_content:\n        aiContent,\n\n      original_paperless_content:\n        originalPaperlessContent,\n\n      combined_paperless_content:\n        combinedPaperlessContent,\n\n      quality,\n\n      write_back: true,\n    },\n  },\n];"
+        "jsCode": "const pages = $input\n  .all()\n  .map(item => item.json)\n  .sort(\n    (a, b) =>\n      Number(a.page_number) -\n      Number(b.page_number)\n  );\n\nfunction toArray(value) {\n  return Array.isArray(value)\n    ? value.filter(value =>\n        value !== null &&\n        value !== undefined &&\n        String(value).trim() !== ''\n      )\n    : [];\n}\n\n/**\n * Bei einer erneuten Verarbeitung wird nur der tatsächlich\n * ursprüngliche Paperless-OCR-Inhalt übernommen.\n */\nfunction extractOriginalPaperlessContent(content) {\n  const value = String(content ?? '').trim();\n\n  const marker =\n    '=== Ursprünglicher Paperless-OCR-Inhalt ===';\n\n  if (!value.includes(marker)) {\n    return value;\n  }\n\n  return value\n    .split(marker)\n    .slice(1)\n    .join(marker)\n    .trim();\n}\n\n/**\n * Fallback für Modellantworten, die trotz des neuen Prompts\n * nur ein Symbol oder Emoji als String zurückgeben.\n */\nconst symbolNames = {\n  '❤️': 'Herz',\n  '❤': 'Herz',\n  '♥': 'Herz',\n  '♡': 'Herz',\n\n  '△': 'Dreieck',\n  '▲': 'Dreieck',\n  '▽': 'Dreieck',\n  '▼': 'Dreieck',\n\n  '□': 'Quadrat',\n  '■': 'Quadrat',\n  '□×': 'Quadrat mit Kreuz',\n  '☒': 'Quadrat mit Kreuz',\n  '⊠': 'Quadrat mit Kreuz',\n\n  '○': 'Kreis',\n  '◯': 'Kreis',\n  '●': 'Kreis',\n\n  '×': 'Kreuz',\n  '✕': 'Kreuz',\n  '✖': 'Kreuz',\n\n  '✓': 'Häkchen',\n  '✔': 'Häkchen',\n\n  '→': 'Pfeil nach rechts',\n  '←': 'Pfeil nach links',\n  '↑': 'Pfeil nach oben',\n  '↓': 'Pfeil nach unten',\n};\n\n/**\n * Wandelt alte String-Antworten und neue Objekt-Antworten\n * in eine gemeinsame Struktur um.\n */\nfunction normalizeVisualItem(value, fallbackType) {\n  if (\n    value === null ||\n    value === undefined\n  ) {\n    return null;\n  }\n\n  if (typeof value === 'string') {\n    const raw = value.trim();\n\n    if (!raw) {\n      return null;\n    }\n\n    return {\n      type: fallbackType,\n      label:\n        symbolNames[raw] ??\n        raw,\n      symbol:\n        symbolNames[raw]\n          ? raw\n          : '',\n      text: '',\n      description: '',\n    };\n  }\n\n  if (typeof value === 'object') {\n    return {\n      type:\n        String(\n          value.type ??\n          fallbackType\n        ).trim(),\n\n      label:\n        String(\n          value.label ??\n          value.name ??\n          ''\n        ).trim(),\n\n      symbol:\n        String(\n          value.symbol ??\n          value.emoji ??\n          value.glyph ??\n          ''\n        ).trim(),\n\n      text:\n        String(\n          value.text ??\n          value.transcription ??\n          ''\n        ).trim(),\n\n      description:\n        String(\n          value.description ??\n          value.details ??\n          ''\n        ).trim(),\n    };\n  }\n\n  return null;\n}\n\nfunction formatSymbol(item) {\n  const label =\n    item.label ||\n    symbolNames[item.symbol] ||\n    'Unbekanntes Symbol';\n\n  const parts = [label];\n\n  if (item.symbol) {\n    parts.push(`(Symbol: ${item.symbol})`);\n  }\n\n  if (item.description) {\n    parts.push(`– ${item.description}`);\n  }\n\n  return parts.join(' ');\n}\n\nfunction formatHandwriting(item) {\n  const text =\n    item.text ||\n    item.label ||\n    item.description;\n\n  if (!text) {\n    return null;\n  }\n\n  return `${text} (handgeschriebener Text)`;\n}\n\nfunction formatVisualObject(item, typeLabel) {\n  const mainText =\n    item.label ||\n    item.text ||\n    typeLabel;\n\n  const details = [];\n\n  if (\n    item.text &&\n    item.text !== mainText\n  ) {\n    details.push(`Text: ${item.text}`);\n  }\n\n  if (item.description) {\n    details.push(item.description);\n  }\n\n  if (item.symbol) {\n    details.push(`Symbol: ${item.symbol}`);\n  }\n\n  if (details.length === 0) {\n    return `${mainText} (${typeLabel})`;\n  }\n\n  return (\n    `${mainText} (${typeLabel}: ` +\n    `${details.join('; ')})`\n  );\n}\n\nconst textParts = [];\nconst tables = [];\nconst documentStructures = [];\n\n/**\n * Hier werden die neuen suchbaren visuellen Beschreibungen\n * pro Seite gesammelt.\n */\nconst searchableVisualSections = [];\n\nconst warnings = [];\n\nfor (const page of pages) {\n  const glmText =\n    page.glm?.text_markdown ||\n    page.glm?.text ||\n    (!page.glm_parsed\n      ? page.glm_raw\n      : '');\n\n  if (String(glmText ?? '').trim()) {\n    textParts.push(\n      `## Seite ${page.page_number}\\n\\n` +\n      String(glmText).trim()\n    );\n  }\n\n  for (\n    const table of toArray(\n      page.glm?.tables_markdown\n    )\n  ) {\n    tables.push(\n      `### Tabelle auf Seite ${page.page_number}\\n\\n` +\n      String(table).trim()\n    );\n  }\n\n  const structures =\n    toArray(\n      page.glm?.document_structure\n    );\n\n  if (structures.length > 0) {\n    documentStructures.push(\n      `### Struktur auf Seite ${page.page_number}\\n\\n` +\n      structures\n        .map(value => `- ${value}`)\n        .join('\\n')\n    );\n  }\n\n  const pageVisualEntries = [];\n\n  /*\n   * Symbole und geometrische Formen\n   */\n  for (\n    const rawSymbol of toArray(\n      page.qwen?.symbols\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawSymbol,\n        'symbol'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatSymbol(item)\n    );\n  }\n\n  /*\n   * Handschriftliche Texte\n   */\n  for (\n    const rawHandwriting of toArray(\n      page.qwen?.handwriting\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawHandwriting,\n        'handwriting'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    const formatted =\n      formatHandwriting(item);\n\n    if (formatted) {\n      pageVisualEntries.push(formatted);\n    }\n  }\n\n  /*\n   * Stempel\n   */\n  for (\n    const rawStamp of toArray(\n      page.qwen?.stamps\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawStamp,\n        'stamp'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'Stempel'\n      )\n    );\n  }\n\n  /*\n   * Unterschriften\n   */\n  for (\n    const rawSignature of toArray(\n      page.qwen?.signatures\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawSignature,\n        'signature'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'Unterschrift'\n      )\n    );\n  }\n\n  /*\n   * Bilder, Fotos, Diagramme und Abbildungen\n   */\n  for (\n    const rawImage of toArray(\n      page.qwen?.images\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawImage,\n        'image'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'Bild oder Abbildung'\n      )\n    );\n  }\n\n  /*\n   * Sonstige visuelle Hinweise\n   */\n  for (\n    const rawNote of toArray(\n      page.qwen?.visual_notes\n    )\n  ) {\n    const item =\n      normalizeVisualItem(\n        rawNote,\n        'visual_note'\n      );\n\n    if (!item) {\n      continue;\n    }\n\n    pageVisualEntries.push(\n      formatVisualObject(\n        item,\n        'visueller Hinweis'\n      )\n    );\n  }\n\n  if (pageVisualEntries.length > 0) {\n    searchableVisualSections.push(\n      `## Seite ${page.page_number}\\n\\n` +\n      pageVisualEntries\n        .map(\n          (value, index) =>\n            `${index + 1}. ${value}`\n        )\n        .join('\\n\\n')\n    );\n  }\n\n  warnings.push(\n    ...toArray(page.glm?.warnings),\n    ...toArray(page.qwen?.warnings)\n  );\n}\n\nconst aiSections = [];\n\nif (textParts.length > 0) {\n  aiSections.push(\n    `# Dokumenttext\\n\\n` +\n    textParts.join('\\n\\n')\n  );\n}\n\nif (tables.length > 0) {\n  aiSections.push(\n    `# Tabellen\\n\\n` +\n    tables.join('\\n\\n')\n  );\n}\n\nif (documentStructures.length > 0) {\n  aiSections.push(\n    `# Dokumentstruktur\\n\\n` +\n    documentStructures.join('\\n\\n')\n  );\n}\n\nif (searchableVisualSections.length > 0) {\n  aiSections.push(\n    `# Erkannte Symbole, visuelle Elemente und handgeschriebene Texte\\n\\n` +\n    searchableVisualSections.join('\\n\\n')\n  );\n}\n\n// Ausschließlich neu erzeugter KI-/Vision-Inhalt.\nconst aiContent =\n  aiSections.join('\\n\\n').trim();\n\n// Tatsächlich ursprünglicher Paperless-OCR-Inhalt.\nconst originalPaperlessContent =\n  extractOriginalPaperlessContent(\n    pages[0]?.original_content\n  );\n\nconst originalSection =\n  originalPaperlessContent ||\n  '[Kein ursprünglicher Paperless-OCR-Inhalt vorhanden]';\n\n// Dieser Inhalt wird später nach Paperless geschrieben.\nconst combinedPaperlessContent = [\n  '=== KI-OCR / Vision-Ergebnis ===',\n  '',\n  aiContent ||\n    '[Kein brauchbares KI-OCR-Ergebnis erzeugt]',\n  '',\n  '=== Ursprünglicher Paperless-OCR-Inhalt ===',\n  '',\n  originalSection,\n]\n  .join('\\n')\n  .trim();\n\n/**\n * Qualitätsprüfung ausschließlich anhand des\n * neuen KI-/Vision-Inhalts.\n */\nconst normalizedAiContent =\n  aiContent.toLowerCase();\n\nconst contentWithoutErrorPhrases =\n  normalizedAiContent\n    .replace(/\\[?unlesbar\\]?/gi, '')\n    .replace(/keine daten/gi, '')\n    .replace(/nicht erkennbar/gi, '')\n    .replace(/kein text erkannt/gi, '')\n    .replace(/^#+.*$/gm, '')\n    .replace(/\\s+/g, '');\n\nconst quality = {\n  usable:\n    pages.length > 0 &&\n    aiContent.length >= 100 &&\n    contentWithoutErrorPhrases.length >= 30,\n\n  ai_character_count:\n    aiContent.length,\n\n  original_character_count:\n    originalPaperlessContent.length,\n\n  combined_character_count:\n    combinedPaperlessContent.length,\n\n  page_count:\n    pages.length,\n\n  glm_json_valid_for_all_pages:\n    pages.every(\n      page =>\n        page.glm_parsed === true\n    ),\n\n  qwen_json_valid_for_all_pages:\n    pages.every(\n      page =>\n        page.qwen_parsed === true\n    ),\n\n  markdown_table_detected:\n    tables.length > 0,\n\n  image_descriptions_present:\n    searchableVisualSections.length > 0,\n\n  warnings,\n};\n\nreturn [\n  {\n    json: {\n      document_id:\n        pages[0]?.document_id,\n\n      title:\n        pages[0]?.title ?? '',\n\n      original_file_name:\n        pages[0]?.original_file_name ?? '',\n\n      original_custom_fields:\n        pages[0]?.original_custom_fields ?? [],\n\n      pages,\n\n      ai_content:\n        aiContent,\n\n      original_paperless_content:\n        originalPaperlessContent,\n\n      combined_paperless_content:\n        combinedPaperlessContent,\n\n      quality,\n\n      write_back: true,\n    },\n  },\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2336,
-        224
+        6560,
+        1296
       ],
       "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUEHREN_PLACEHOLDER",
       "name": "Dokumentergebnis zusammenführen"
@@ -383,8 +383,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        2528,
-        272
+        6752,
+        1344
       ],
       "id": "NODE_ID_KI_ERGEBNIS_BRAUCHBAR_PLACEHOLDER",
       "name": "KI-Ergebnis brauchbar?"
@@ -403,8 +403,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        2896,
-        176
+        7120,
+        1248
       ],
       "id": "NODE_ID_PAPERLESS_CONTENT_AKTUALISIEREN_PLACEHOLDER",
       "name": "Paperless-content aktualisieren",
@@ -443,8 +443,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        704,
-        320
+        4928,
+        1392
       ],
       "id": "NODE_ID_BEREITS_DURCH_KI_OCR_VERARBEITET_PLACEHOLDER",
       "name": "Bereits durch KI-OCR verarbeitet?"
@@ -454,8 +454,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        912,
-        176
+        5136,
+        1248
       ],
       "id": "NODE_ID_DOKUMENT_WURDE_BEREITS_DURCH_KI_OCR_VERARBEITET_PLACEHOLDER",
       "name": "Dokument wurde bereits durch KI-OCR verarbeitet"
@@ -468,8 +468,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        512,
-        320
+        4736,
+        1392
       ],
       "id": "NODE_ID_KI_OCR_STATUS_PRUEFEN_PLACEHOLDER",
       "name": "KI-OCR-Status prüfen"
@@ -482,8 +482,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2720,
-        176
+        6944,
+        1248
       ],
       "id": "NODE_ID_CUSTOM_FIELDS_VORBEREITEN_PLACEHOLDER",
       "name": "Custom Fields vorbereiten"
@@ -495,8 +495,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        3248,
-        288
+        7472,
+        1360
       ],
       "id": "NODE_ID_TEMPORAERE_OCR_DATEIEN_LOESCHEN_PLACEHOLDER",
       "name": "Temporäre OCR-Dateien löschen"
@@ -510,8 +510,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        3056,
-        176
+        7280,
+        1248
       ],
       "id": "NODE_ID_TEST_KI_ERGEBNIS_PLACEHOLDER",
       "name": "TEST KI-Ergebnis",
@@ -820,8 +820,7 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": false
+    "binaryMode": "separate"
   },
   "versionId": "VERSION_ID_PLACEHOLDER",
   "meta": {
