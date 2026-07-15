@@ -347,7 +347,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const fieldId = 12;\n\nconst customFields =\n  Array.isArray($json.custom_fields)\n    ? $json.custom_fields\n    : [];\n\nconst processedField =\n  customFields.find(\n    field => Number(field.field) === fieldId\n  );\n\nreturn {\n  json: {\n    ...$json,\n    ki_ocr_processed:\n      processedField?.value === true,\n  },\n};"
+        "jsCode": "const fieldId = 1;\n\nconst customFields =\n  Array.isArray($json.custom_fields)\n    ? $json.custom_fields\n    : [];\n\nconst processedField =\n  customFields.find(\n    field => Number(field.field) === fieldId\n  );\n\nreturn {\n  json: {\n    ...$json,\n    ki_ocr_processed:\n      processedField?.value === true,\n  },\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -361,7 +361,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const kiOcrFieldId = 12;\n\nconst existing =\n  Array.isArray($json.original_custom_fields)\n    ? $json.original_custom_fields.map(item => ({ ...item }))\n    : [];\n\nconst updated = existing.filter(\n  item => Number(item.field) !== kiOcrFieldId\n);\n\nupdated.push({\n  field: kiOcrFieldId,\n  value: true,\n});\n\nreturn {\n  json: {\n    ...$json,\n    updated_custom_fields: updated,\n  },\n};"
+        "jsCode": "const kiOcrFieldId = 1;\n\nconst existing =\n  Array.isArray($json.original_custom_fields)\n    ? $json.original_custom_fields.map(item => ({ ...item }))\n    : [];\n\nconst updated = existing.filter(\n  item => Number(item.field) !== kiOcrFieldId\n);\n\nupdated.push({\n  field: kiOcrFieldId,\n  value: true,\n});\n\nreturn {\n  json: {\n    ...$json,\n    updated_custom_fields: updated,\n  },\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
