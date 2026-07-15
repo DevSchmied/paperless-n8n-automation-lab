@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const payload =\n  typeof $json.body === 'string'\n    ? JSON.parse($json.body)\n    : $json.body;\n\nconst match = payload.doc_url.match(/\\/documents\\/(\\d+)\\/?/);\n\nif (!match) {\n  throw new Error('Dokument-ID wurde in doc_url nicht gefunden');\n}\n\nreturn [{\n  json: {\n    ...payload,\n    document_id: Number(match[1]),\n  },\n}];"
+        "jsCode": "const input = $input.first().json;\n\nlet payload = input.body ?? input;\n\nif (typeof payload === 'string') {\n  try {\n    payload = JSON.parse(payload);\n  } catch {\n    throw new Error(\n      'Webhook-Body ist kein gültiges JSON.'\n    );\n  }\n}\n\nconst docUrl = payload?.doc_url;\n\nif (\n  typeof docUrl !== 'string' ||\n  !docUrl.trim()\n) {\n  throw new Error(\n    'Webhook-Feld \"doc_url\" fehlt. ' +\n    'Paperless muss Name=doc_url und Wert={{doc_url}} senden.'\n  );\n}\n\nconst match = docUrl.match(\n  /\\/documents\\/(\\d+)\\/?/\n);\n\nif (!match) {\n  throw new Error(\n    `Dokument-ID wurde in doc_url nicht gefunden: ${docUrl}`\n  );\n}\n\nreturn [{\n  json: {\n    ...payload,\n    doc_url: docUrl,\n    document_id: Number(match[1]),\n  },\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
