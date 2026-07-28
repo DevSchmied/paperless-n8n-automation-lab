@@ -440,6 +440,21 @@
       ],
       "id": "NODE_ID_TESTINSTRUMENTIERUNG_CSV_VORBEREITEN_PLACEHOLDER",
       "name": "TESTINSTRUMENTIERUNG – CSV vorbereiten"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ '/files/test-results/efficiency-2026-07/' + $binary.data.fileName }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        6992,
+        1104
+      ],
+      "id": "NODE_ID_TESTINSTRUMENTIERUNG_CSV_SPEICHERN_PLACEHOLDER",
+      "name": "TESTINSTRUMENTIERUNG – CSV speichern"
     }
   ],
   "pinData": {},
@@ -711,6 +726,17 @@
         [
           {
             "node": "Seitenmetadaten ergänzen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TESTINSTRUMENTIERUNG – CSV vorbereiten": {
+      "main": [
+        [
+          {
+            "node": "TESTINSTRUMENTIERUNG – CSV speichern",
             "type": "main",
             "index": 0
           }
