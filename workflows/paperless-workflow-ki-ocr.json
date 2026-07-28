@@ -427,6 +427,19 @@
       ],
       "id": "NODE_ID_PNG_SEITEN_AUS_RAM_LADEN_PLACEHOLDER",
       "name": "PNG-Seiten aus RAM laden"
+    },
+    {
+      "parameters": {
+        "jsCode": "// TESTINSTRUMENTIERUNG START\nconst result = $input.first().json;\nconst title =\n  String(result.title ?? 'ohne-titel');\n\nconst phase =\n  title.includes('EFF-OPT')\n    ? 'optimized'\n    : title.includes('EFF-BL')\n      ? 'baseline'\n      : 'verification';\n\nconst safeTitle = title\n  .normalize('NFKD')\n  .replace(/[^\\w.-]+/g, '-')\n  .replace(/-+/g, '-')\n  .replace(/^-|-$/g, '')\n  .slice(0, 80);\n\nconst columns = [\n  'phase',\n  'document_id',\n  'title',\n  'page_number',\n  'total_duration_ms',\n  'load_duration_ms',\n  'prompt_eval_count',\n  'prompt_eval_duration_ms',\n  'eval_count',\n  'eval_duration_ms',\n  'response_characters',\n  'image_base64_characters',\n  'image_approx_bytes',\n];\n\nfunction csvCell(value) {\n  const text = String(value ?? '');\n  return `\"${text.replace(/\"/g, '\"\"')}\"`;\n}\n\nconst rows =\n  (result.page_metrics ?? []).map(\n    page => ({\n      phase,\n      document_id:\n        result.document_id,\n      title,\n      ...page,\n    })\n  );\n\nconst csv = [\n  columns.map(csvCell).join(','),\n  ...rows.map(row =>\n    columns\n      .map(column => csvCell(row[column]))\n      .join(',')\n  ),\n].join('\\n');\n\nconst fileName =\n  `metrics-${result.document_id}-${safeTitle}.csv`;\n\nreturn [\n  {\n    json: {\n      document_id:\n        result.document_id,\n      title,\n      phase,\n      file_name:\n        fileName,\n      performance:\n        result.performance,\n      quality:\n        result.quality,\n    },\n    binary: {\n      data: {\n        data:\n          Buffer\n            .from(csv, 'utf8')\n            .toString('base64'),\n        mimeType:\n          'text/csv',\n        fileExtension:\n          'csv',\n        fileName,\n      },\n    },\n  },\n];\n// TESTINSTRUMENTIERUNG ENDE"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6784,
+        1104
+      ],
+      "id": "NODE_ID_TESTINSTRUMENTIERUNG_CSV_VORBEREITEN_PLACEHOLDER",
+      "name": "TESTINSTRUMENTIERUNG – CSV vorbereiten"
     }
   ],
   "pinData": {},
@@ -575,6 +588,11 @@
         [
           {
             "node": "KI-Ergebnis brauchbar?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TESTINSTRUMENTIERUNG – CSV vorbereiten",
             "type": "main",
             "index": 0
           }
