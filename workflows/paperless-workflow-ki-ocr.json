@@ -92,7 +92,7 @@
         5328,
         1392
       ],
-      "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFUEHREN_PLACEHOLDER",
+      "id": "NODE_ID_DOKUMENTDATEN_UND_DATEI_ZUSAMMENFUHREN_PLACEHOLDER",
       "name": "Dokumentdaten und Datei zusammenführen"
     },
     {
@@ -105,8 +105,8 @@
         5696,
         1392
       ],
-      "id": "NODE_ID_PDF_IM_RAM_IN_PNG_SEITEN_UMWANDELN_PLACEHOLDER",
-      "name": "PDF im RAM in PNG-Seiten umwandeln"
+      "id": "NODE_ID_PDF_IN_PNG_SEITEN_UMWANDELN_PLACEHOLDER",
+      "name": "PDF in PNG-Seiten umwandeln"
     },
     {
       "parameters": {
@@ -118,7 +118,7 @@
         6016,
         1392
       ],
-      "id": "NODE_ID_SEITENMETADATEN_ERGAENZEN_PLACEHOLDER",
+      "id": "NODE_ID_SEITENMETADATEN_ERGANZEN_PLACEHOLDER",
       "name": "Seitenmetadaten ergänzen"
     },
     {
@@ -180,7 +180,7 @@
         6752,
         1520
       ],
-      "id": "NODE_ID_BASE64_METADATEN_ERGAENZEN_PLACEHOLDER",
+      "id": "NODE_ID_BASE64_METADATEN_ERGANZEN_PLACEHOLDER",
       "name": "Base64-Metadaten ergänzen"
     },
     {
@@ -207,7 +207,7 @@
         6560,
         1248
       ],
-      "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUEHREN_PLACEHOLDER",
+      "id": "NODE_ID_DOKUMENTERGEBNIS_ZUSAMMENFUHREN_PLACEHOLDER",
       "name": "Dokumentergebnis zusammenführen"
     },
     {
@@ -326,7 +326,7 @@
         4736,
         1392
       ],
-      "id": "NODE_ID_KI_OCR_STATUS_PRUEFEN_PLACEHOLDER",
+      "id": "NODE_ID_KI_OCR_STATUS_PRUFEN_PLACEHOLDER",
       "name": "KI-OCR-Status prüfen"
     },
     {
@@ -353,8 +353,8 @@
         7456,
         1376
       ],
-      "id": "NODE_ID_TEMPORAERE_OCR_DATEIEN_AUS_RAM_LOESCHEN_PLACEHOLDER",
-      "name": "Temporäre OCR-Dateien aus RAM löschen"
+      "id": "NODE_ID_TEMPORARE_OCR_DATEIEN_LOSCHEN_PLACEHOLDER",
+      "name": "Temporäre OCR-Dateien löschen"
     },
     {
       "parameters": {
@@ -410,7 +410,7 @@
         5520,
         1392
       ],
-      "id": "NODE_ID_PDF_TEMPORAER_IM_RAM_SPEICHERN_PLACEHOLDER",
+      "id": "NODE_ID_PDF_TEMPORAR_IM_RAM_SPEICHERN_PLACEHOLDER",
       "name": "PDF temporär im RAM speichern",
       "notes": "Der Zielpfad /files/tmp ist ein flüchtiges tmpfs im RAM und kein persistenter Festplattenspeicher."
     },
@@ -427,6 +427,19 @@
       ],
       "id": "NODE_ID_PNG_SEITEN_AUS_RAM_LADEN_PLACEHOLDER",
       "name": "PNG-Seiten aus RAM laden"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\n\nconst aiContent =\n  String(input.ai_content ?? '').trim();\n\nif (!aiContent) {\n  throw new Error(\n    'ai_content fehlt. Die Felderkennung darf nur den von unserer KI erzeugten Inhalt verwenden.'\n  );\n}\n\nif (\n  aiContent.includes(\n    '=== Ursprünglicher Paperless-OCR-Inhalt ==='\n  )\n) {\n  throw new Error(\n    'Der ursprüngliche Paperless-OCR-Inhalt wurde unerwartet an die Felderkennung übergeben.'\n  );\n}\n\nconst MAX_SOURCE_CHARACTERS = 8000;\nconst DOCUMENT_BEGINNING_CHARACTERS = 2500;\nconst CONTEXT_LINES_BEFORE = 2;\nconst CONTEXT_LINES_AFTER = 3;\n\nfunction normalizeSearchText(value) {\n  return String(value ?? '')\n    .toLowerCase()\n    .replace(/ä/g, 'ae')\n    .replace(/ö/g, 'oe')\n    .replace(/ü/g, 'ue')\n    .replace(/ß/g, 'ss')\n    .replace(/[^a-z0-9]+/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nconst fieldAliases = {\n  Betroffener: [\n    'betroffener',\n    'betroffene person',\n    'patient',\n    'patientin',\n    'versicherter',\n    'versicherte',\n    'teilnehmer',\n    'teilnehmerin',\n  ],\n\n  Rechnungsbetrag: [\n    'rechnungsbetrag',\n    'gesamtbetrag',\n    'bruttobetrag',\n    'endbetrag',\n    'zahlbetrag',\n    'zu zahlender betrag',\n    'rechnungssumme',\n    'gesamt eur',\n  ],\n\n  Bezahlt: [\n    'bezahlt',\n    'nicht bezahlt',\n    'unbezahlt',\n    'beglichen',\n    'zahlung eingegangen',\n    'zahlung erhalten',\n    'zahlung ausstehend',\n    'zahlungsstatus',\n    'offener betrag',\n  ],\n\n  'Frist - Wiedervorlage': [\n    'frist',\n    'wiedervorlage',\n    'faelligkeit',\n    'faelligkeitsdatum',\n    'zahlungsziel',\n    'zahlbar bis',\n    'zu zahlen bis',\n    'spaetestens bis',\n    'due date',\n  ],\n\n  Fortbildung: [\n    'fortbildung',\n    'weiterbildung',\n    'schulung',\n    'seminar',\n    'kurs',\n    'massnahme',\n    'lehrgang',\n  ],\n\n  'Leistungszeitraum von': [\n    'leistungszeitraum',\n    'leistungsbeginn',\n    'leistungsstart',\n    'leistung von',\n    'zeitraum von',\n    'behandlungszeitraum',\n    'abrechnungszeitraum',\n  ],\n\n  'Leistungszeitraum bis': [\n    'leistungszeitraum',\n    'leistungsende',\n    'leistung bis',\n    'zeitraum bis',\n    'behandlungszeitraum',\n    'abrechnungszeitraum',\n  ],\n\n  Rechnungsnummer: [\n    'rechnungsnummer',\n    'rechnung nr',\n    'rechnungs nr',\n    'belegnummer',\n    'fakturanummer',\n    'invoice number',\n    'invoice no',\n  ],\n};\n\nconst lines =\n  aiContent.split(/\\r?\\n/);\n\nconst selectedIndexes = new Set();\nconst matchedFields = new Set();\nconst matchedAliases = new Set();\n\nfunction addIndex(index) {\n  if (\n    index >= 0 &&\n    index < lines.length\n  ) {\n    selectedIndexes.add(index);\n  }\n}\n\nfunction addWindow(\n  index,\n  before = CONTEXT_LINES_BEFORE,\n  after = CONTEXT_LINES_AFTER\n) {\n  for (\n    let current = index - before;\n    current <= index + after;\n    current++\n  ) {\n    addIndex(current);\n  }\n}\n\nfunction addCompleteTable(index) {\n  if (!lines[index]?.trim().startsWith('|')) {\n    return;\n  }\n\n  let start = index;\n  let end = index;\n\n  while (\n    start > 0 &&\n    lines[start - 1].trim().startsWith('|')\n  ) {\n    start--;\n  }\n\n  while (\n    end + 1 < lines.length &&\n    lines[end + 1].trim().startsWith('|')\n  ) {\n    end++;\n  }\n\n  for (\n    let current = start;\n    current <= end;\n    current++\n  ) {\n    addIndex(current);\n  }\n}\n\nlet beginningCharacters = 0;\n\nfor (\n  let index = 0;\n  index < lines.length;\n  index++\n) {\n  if (\n    beginningCharacters >=\n    DOCUMENT_BEGINNING_CHARACTERS\n  ) {\n    break;\n  }\n\n  addIndex(index);\n  beginningCharacters +=\n    lines[index].length + 1;\n}\n\nfor (\n  let index = 0;\n  index < lines.length;\n  index++\n) {\n  const line = lines[index];\n  const normalizedLine =\n    normalizeSearchText(line);\n\n  if (/^\\s*#{1,6}\\s+/.test(line)) {\n    addWindow(index, 0, 2);\n  }\n\n  for (\n    const [fieldName, aliases]\n    of Object.entries(fieldAliases)\n  ) {\n    for (const alias of aliases) {\n      const normalizedAlias =\n        normalizeSearchText(alias);\n\n      if (\n        normalizedAlias &&\n        normalizedLine.includes(\n          normalizedAlias\n        )\n      ) {\n        matchedFields.add(fieldName);\n        matchedAliases.add(alias);\n        addWindow(index);\n        addCompleteTable(index);\n      }\n    }\n  }\n}\n\nconst sortedIndexes =\n  [...selectedIndexes]\n    .sort((a, b) => a - b);\n\nconst selectedLines = [];\nlet previousIndex = null;\n\nfor (const index of sortedIndexes) {\n  if (\n    previousIndex !== null &&\n    index > previousIndex + 1\n  ) {\n    selectedLines.push(\n      '[... ausgelassener, nicht feldrelevanter Text ...]'\n    );\n  }\n\n  selectedLines.push(lines[index]);\n  previousIndex = index;\n}\n\nconst documentTitle =\n  String(input.title ?? '').trim();\n\nlet fieldSourceText = [\n  `Dokumenttitel: ${documentTitle}`,\n  '',\n  'Vorgefilterter KI-Dokumentinhalt:',\n  '',\n  selectedLines.join('\\n').trim(),\n]\n  .join('\\n')\n  .trim();\n\nlet sourceTruncated = false;\n\nif (\n  fieldSourceText.length >\n  MAX_SOURCE_CHARACTERS\n) {\n  fieldSourceText =\n    fieldSourceText\n      .slice(0, MAX_SOURCE_CHARACTERS)\n      .replace(/\\s+\\S*$/, '')\n      .trim();\n\n  fieldSourceText +=\n    '\\n[... Vorfilter-Ausgabe wegen Größenlimit gekürzt ...]';\n\n  sourceTruncated = true;\n}\n\nreturn [\n  {\n    json: {\n      ...input,\n\n      field_source_text:\n        fieldSourceText,\n\n      field_prefilter: {\n        original_characters:\n          aiContent.length,\n\n        selected_characters:\n          fieldSourceText.length,\n\n        source_truncated:\n          sourceTruncated,\n\n        matched_fields:\n          [...matchedFields],\n\n        matched_aliases:\n          [...matchedAliases],\n      },\n\n      // TESTMESSUNG START\n      field_detection_started_at_ms:\n        Date.now(),\n      // TESTMESSUNG ENDE\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6880,
+        1072
+      ],
+      "id": "NODE_ID_FELDRELEVANTE_TEXTSTELLEN_VORFILTERN_PLACEHOLDER",
+      "name": "Feldrelevante Textstellen vorfiltern"
     }
   ],
   "pinData": {},
@@ -486,7 +499,7 @@
         ]
       ]
     },
-    "PDF im RAM in PNG-Seiten umwandeln": {
+    "PDF in PNG-Seiten umwandeln": {
       "main": [
         [
           {
@@ -585,14 +598,14 @@
       "main": [
         [
           {
-            "node": "Custom Fields vorbereiten",
+            "node": "Feldrelevante Textstellen vorfiltern",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Temporäre OCR-Dateien aus RAM löschen",
+            "node": "Temporäre OCR-Dateien löschen",
             "type": "main",
             "index": 0
           }
@@ -659,7 +672,7 @@
       "main": [
         [
           {
-            "node": "Temporäre OCR-Dateien aus RAM löschen",
+            "node": "Temporäre OCR-Dateien löschen",
             "type": "main",
             "index": 0
           }
@@ -681,7 +694,7 @@
       "main": [
         [
           {
-            "node": "PDF im RAM in PNG-Seiten umwandeln",
+            "node": "PDF in PNG-Seiten umwandeln",
             "type": "main",
             "index": 0
           }
@@ -698,12 +711,18 @@
           }
         ]
       ]
+    },
+    "Temporäre OCR-Dateien löschen": {
+      "main": [
+        []
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "binaryMode": "separate"
+    "binaryMode": "separate",
+    "availableInMCP": false
   },
   "versionId": "VERSION_ID_PLACEHOLDER",
   "meta": {
