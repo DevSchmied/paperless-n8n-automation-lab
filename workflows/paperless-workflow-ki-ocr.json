@@ -460,7 +460,7 @@
       ],
       "id": "NODE_ID_BENUTZERDEFINIERTE_FELDER_ERKENNEN_PLACEHOLDER",
       "name": "Benutzerdefinierte Felder erkennen",
-      "onError": "continueErrorOutput"
+      "onError": "continueRegularOutput"
     }
   ],
   "pinData": {},
