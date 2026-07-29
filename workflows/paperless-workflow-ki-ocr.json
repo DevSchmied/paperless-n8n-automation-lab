@@ -258,8 +258,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        7072,
-        1264
+        7632,
+        1136
       ],
       "id": "NODE_ID_PAPERLESS_CONTENT_AKTUALISIEREN_PLACEHOLDER",
       "name": "Paperless-content aktualisieren",
@@ -318,7 +318,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const fieldId = 1;\n\nconst customFields =\n  Array.isArray($json.custom_fields)\n    ? $json.custom_fields\n    : [];\n\nconst processedField =\n  customFields.find(\n    field => Number(field.field) === fieldId\n  );\n\nreturn {\n  json: {\n    ...$json,\n    ki_ocr_processed:\n      processedField?.value === true,\n  },\n};"
+        "jsCode": "const fieldId = 0;\n\nconst customFields =\n  Array.isArray($json.custom_fields)\n    ? $json.custom_fields\n    : [];\n\nconst processedField =\n  customFields.find(\n    field => Number(field.field) === fieldId\n  );\n\nreturn {\n  json: {\n    ...$json,\n    ki_ocr_processed:\n      processedField?.value === true,\n  },\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -332,13 +332,13 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "const kiOcrFieldId = 1;\n\nconst existing =\n  Array.isArray($json.original_custom_fields)\n    ? $json.original_custom_fields.map(item => ({ ...item }))\n    : [];\n\nconst updated = existing.filter(\n  item => Number(item.field) !== kiOcrFieldId\n);\n\nupdated.push({\n  field: kiOcrFieldId,\n  value: true,\n});\n\nreturn {\n  json: {\n    ...$json,\n    updated_custom_fields: updated,\n  },\n};"
+        "jsCode": "const FIELD_IDS = {\n  'KI-OCR verarbeitet': 0,\n  Betroffener: 0,\n  Rechnungsbetrag: 0,\n  Bezahlt: 0,\n  'Frist - Wiedervorlage': 0,\n  Fortbildung: 0,\n  'Leistungszeitraum von': 0,\n  'Leistungszeitraum bis': 0,\n  Rechnungsnummer: 0,\n};\n\nconst OVERWRITE_EXISTING = false;\n\nconst requiredNames = [\n  'KI-OCR verarbeitet',\n  'Betroffener',\n  'Rechnungsbetrag',\n  'Bezahlt',\n  'Frist - Wiedervorlage',\n  'Fortbildung',\n  'Leistungszeitraum von',\n  'Leistungszeitraum bis',\n  'Rechnungsnummer',\n];\n\nconst invalidConfiguration =\n  requiredNames.filter(\n    name =>\n      !Number.isInteger(\n        Number(FIELD_IDS[name])\n      ) ||\n      Number(FIELD_IDS[name]) <= 0\n  );\n\nif (invalidConfiguration.length > 0) {\n  throw new Error(\n    'Paperless-Feld-IDs fehlen oder sind ungültig: ' +\n    invalidConfiguration.join(', ')\n  );\n}\n\nconst existing =\n  Array.isArray(\n    $json.original_custom_fields\n  )\n    ? $json.original_custom_fields.map(\n        item => ({ ...item })\n      )\n    : [];\n\nconst detected =\n  Array.isArray(\n    $json.detected_custom_fields\n  )\n    ? $json.detected_custom_fields\n    : [];\n\nfunction hasMeaningfulValue(value) {\n  if (\n    value === null ||\n    value === undefined\n  ) {\n    return false;\n  }\n\n  if (\n    typeof value === 'string' &&\n    value.trim() === ''\n  ) {\n    return false;\n  }\n\n  if (\n    Array.isArray(value) &&\n    value.length === 0\n  ) {\n    return false;\n  }\n\n  return true;\n}\n\nconst report = {\n  recognized:\n    detected.length,\n\n  added:\n    [],\n\n  filled_empty:\n    [],\n\n  preserved_existing:\n    [],\n\n  ignored_unknown:\n    [],\n};\n\nfor (const item of detected) {\n  const fieldName =\n    String(item?.name ?? '').trim();\n\n  const fieldId =\n    Number(FIELD_IDS[fieldName]);\n\n  if (\n    !fieldName ||\n    !Number.isInteger(fieldId) ||\n    fieldId <= 0\n  ) {\n    report.ignored_unknown.push(\n      fieldName || '[ohne Feldname]'\n    );\n    continue;\n  }\n\n  const existingIndex =\n    existing.findIndex(\n      entry =>\n        Number(entry.field) === fieldId\n    );\n\n  if (existingIndex >= 0) {\n    const existingValue =\n      existing[existingIndex].value;\n\n    if (\n      hasMeaningfulValue(existingValue) &&\n      !OVERWRITE_EXISTING\n    ) {\n      report.preserved_existing.push(\n        fieldName\n      );\n      continue;\n    }\n\n    existing[existingIndex] = {\n      ...existing[existingIndex],\n      field:\n        fieldId,\n      value:\n        item.value,\n    };\n\n    report.filled_empty.push(\n      fieldName\n    );\n    continue;\n  }\n\n  existing.push({\n    field:\n      fieldId,\n    value:\n      item.value,\n  });\n\n  report.added.push(fieldName);\n}\n\nconst statusFieldId =\n  Number(\n    FIELD_IDS['KI-OCR verarbeitet']\n  );\n\nconst statusIndex =\n  existing.findIndex(\n    entry =>\n      Number(entry.field) ===\n      statusFieldId\n  );\n\nif (statusIndex >= 0) {\n  existing[statusIndex] = {\n    ...existing[statusIndex],\n    field:\n      statusFieldId,\n    value:\n      true,\n  };\n} else {\n  existing.push({\n    field:\n      statusFieldId,\n    value:\n      true,\n  });\n}\n\nreturn {\n  json: {\n    ...$json,\n\n    updated_custom_fields:\n      existing,\n\n    custom_field_update_report:\n      report,\n  },\n};\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6880,
-        1264
+        7472,
+        1136
       ],
       "id": "NODE_ID_CUSTOM_FIELDS_VORBEREITEN_PLACEHOLDER",
       "name": "Custom Fields vorbereiten"
@@ -350,7 +350,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        7728,
+        7968,
         1376
       ],
       "id": "NODE_ID_TEMPORARE_OCR_DATEIEN_LOSCHEN_PLACEHOLDER",
@@ -365,8 +365,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        7264,
-        1264
+        7792,
+        1136
       ],
       "id": "NODE_ID_TEST_KI_ERGEBNIS_PLACEHOLDER",
       "name": "TEST KI-Ergebnis",
@@ -435,8 +435,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6880,
-        1072
+        6896,
+        1216
       ],
       "id": "NODE_ID_FELDRELEVANTE_TEXTSTELLEN_VORFILTERN_PLACEHOLDER",
       "name": "Feldrelevante Textstellen vorfiltern"
@@ -455,8 +455,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        7056,
-        1072
+        7040,
+        1264
       ],
       "id": "NODE_ID_BENUTZERDEFINIERTE_FELDER_ERKENNEN_PLACEHOLDER",
       "name": "Benutzerdefinierte Felder erkennen",
@@ -469,8 +469,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7216,
-        1072
+        7184,
+        1216
       ],
       "id": "NODE_ID_FELDERGEBNIS_NORMALISIEREN_PLACEHOLDER",
       "name": "Feldergebnis normalisieren"
@@ -503,8 +503,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        7392,
-        1072
+        7312,
+        1264
       ],
       "id": "NODE_ID_FELDERGEBNIS_GUELTIG_PLACEHOLDER",
       "name": "Feldergebnis gültig?"
@@ -518,8 +518,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        7552,
-        1216
+        7664,
+        1280
       ],
       "id": "NODE_ID_FELDERKENNUNG_FEHLGESCHLAGEN_PLACEHOLDER",
       "name": "Felderkennung fehlgeschlagen",
@@ -760,7 +760,13 @@
     },
     "TEST KI-Ergebnis": {
       "main": [
-        []
+        [
+          {
+            "node": "Temporäre OCR-Dateien löschen",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Qwen3.5 Seite analysieren": {
@@ -836,7 +842,13 @@
     },
     "Feldergebnis gültig?": {
       "main": [
-        [],
+        [
+          {
+            "node": "Custom Fields vorbereiten",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Felderkennung fehlgeschlagen",
