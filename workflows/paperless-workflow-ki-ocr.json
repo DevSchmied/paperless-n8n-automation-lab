@@ -474,6 +474,40 @@
       ],
       "id": "NODE_ID_FELDERGEBNIS_NORMALISIEREN_PLACEHOLDER",
       "name": "Feldergebnis normalisieren"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "CONDITION_ID_FELDERGEBNIS_GUELTIG_1_PLACEHOLDER",
+              "leftValue": "={{ $json.field_detection_valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        7440,
+        1072
+      ],
+      "id": "NODE_ID_FELDERGEBNIS_GUELTIG_PLACEHOLDER",
+      "name": "Feldergebnis gültig?"
     }
   ],
   "pinData": {},
@@ -761,6 +795,17 @@
         [
           {
             "node": "Feldergebnis normalisieren",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Feldergebnis normalisieren": {
+      "main": [
+        [
+          {
+            "node": "Feldergebnis gültig?",
             "type": "main",
             "index": 0
           }
