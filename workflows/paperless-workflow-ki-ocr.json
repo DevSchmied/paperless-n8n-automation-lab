@@ -350,7 +350,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        7520,
+        7728,
         1376
       ],
       "id": "NODE_ID_TEMPORARE_OCR_DATEIEN_LOSCHEN_PLACEHOLDER",
@@ -469,7 +469,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7232,
+        7216,
         1072
       ],
       "id": "NODE_ID_FELDERGEBNIS_NORMALISIEREN_PLACEHOLDER",
@@ -503,11 +503,33 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        7440,
+        7392,
         1072
       ],
       "id": "NODE_ID_FELDERGEBNIS_GUELTIG_PLACEHOLDER",
       "name": "Feldergebnis gültig?"
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=Felderkennung fehlgeschlagen\nDokument-ID: {{ $json.document_id }}\nTitel: {{ $json.title }}\nDie Paperless-Aktualisierung wurde nicht ausgeführt.\nWarnungen: {{ ($json.field_detection_warnings ?? []).join('; ') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        7552,
+        1216
+      ],
+      "id": "NODE_ID_FELDERKENNUNG_FEHLGESCHLAGEN_PLACEHOLDER",
+      "name": "Felderkennung fehlgeschlagen",
+      "webhookId": "WEBHOOK_ID_FELDERKENNUNG_FEHLGESCHLAGEN_PLACEHOLDER",
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_N8N_TELEGRAM_CREDENTIAL_ID",
+          "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -806,6 +828,29 @@
         [
           {
             "node": "Feldergebnis gültig?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Feldergebnis gültig?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Felderkennung fehlgeschlagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Felderkennung fehlgeschlagen": {
+      "main": [
+        [
+          {
+            "node": "Temporäre OCR-Dateien löschen",
             "type": "main",
             "index": 0
           }
