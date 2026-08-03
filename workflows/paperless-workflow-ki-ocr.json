@@ -396,7 +396,9 @@
         1520
       ],
       "id": "NODE_ID_QWEN3_5_SEITE_ANALYSIEREN_PLACEHOLDER",
-      "name": "Qwen3.5 Seite analysieren"
+      "name": "Qwen3.5 Seite analysieren",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -460,7 +462,9 @@
       ],
       "id": "NODE_ID_BENUTZERDEFINIERTE_FELDER_ERKENNEN_PLACEHOLDER",
       "name": "Benutzerdefinierte Felder erkennen",
-      "onError": "continueRegularOutput"
+      "onError": "continueRegularOutput",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
