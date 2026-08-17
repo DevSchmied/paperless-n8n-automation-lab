@@ -534,6 +534,29 @@
           "name": "YOUR_N8N_TELEGRAM_CREDENTIAL_NAME"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://YOUR_OLLAMA_HOST:11434/api/chat",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ ({\n  model: 'qwen3.5:9b-q8_0',\n  stream: false,\n  think: false,\n  keep_alive: '10m',\n  format: {\n    type: 'object',\n    properties: {\n      custom_fields: {\n        type: 'array',\n        items: {\n          type: 'object',\n          properties: {\n            name: {\n              type: 'string',\n              enum: [\n                'Betroffener',\n                'Rechnungsbetrag',\n                'Bezahlt',\n                'Frist - Wiedervorlage',\n                'Fortbildung',\n                'Leistungszeitraum von',\n                'Leistungszeitraum bis',\n                'Rechnungsnummer'\n              ]\n            },\n            value: {\n              anyOf: [\n                { type: 'string' },\n                { type: 'number' },\n                { type: 'boolean' },\n                { type: 'null' }\n              ]\n            },\n            evidence: {\n              type: 'string'\n            }\n          },\n          required: [\n            'name',\n            'value',\n            'evidence'\n          ],\n          additionalProperties: false\n        }\n      }\n    },\n    required: ['custom_fields'],\n    additionalProperties: false\n  },\n  options: {\n    temperature: 0,\n    num_ctx: 32768,\n    num_predict: 1024,\n    repeat_penalty: 1.05\n  },\n  messages: [\n    {\n      role: 'system',\n      content: [\n        'Du extrahierst benutzerdefinierte Felder für Paperless-ngx.',\n        'Verwende ausschließlich den bereitgestellten vollständigen KI-Dokumentinhalt.',\n        'Erfinde und ergänze keine Werte aus allgemeinem Wissen.',\n        'Wenn ein Wert fehlt, unklar oder widersprüchlich ist, lasse das Feld vollständig weg.',\n        'Gib jedes Feld höchstens einmal zurück.',\n        'Betroffener ist nur der Nachname der betroffenen natürlichen Person, nicht Absender, Firma, Rechnungsaussteller oder Sachbearbeiter.',\n        'Rechnungsbetrag ist der gesamte End-, Brutto- oder Zahlbetrag in EUR.',\n        'Bezahlt ist true nur bei eindeutig bezahlter oder beglichener Rechnung und false nur bei eindeutig offenem oder noch zu zahlendem Betrag.',\n        'Frist - Wiedervorlage ist das Datum, bis wann bezahlt, erledigt, geprüft oder wiedervorgelegt werden muss.',\n        'Fortbildung enthält nur den Namen einer tatsächlich genannten Fortbildung, Weiterbildung, Schulung oder Maßnahme.',\n        'Leistungszeitraum von und Leistungszeitraum bis sind Beginn und Ende der Leistung; Rechnungs- und Fälligkeitsdatum sind dafür unzulässig.',\n        'Rechnungsnummer wird exakt übernommen.',\n        'Datumswerte müssen YYYY-MM-DD sein.',\n        'Geldbeträge werden als Zahl ohne Währungssymbol ausgegeben.',\n        'Boolean-Werte sind ausschließlich true oder false.',\n        'evidence enthält eine kurze wörtliche Fundstelle aus der Quelle.',\n        'Antworte ausschließlich entsprechend dem vorgegebenen JSON-Schema.'\n      ].join('\\n')\n    },\n    {\n      role: 'user',\n      content: $json.ai_content\n    }\n  ]\n}) }}",
+        "options": {
+          "timeout": 1800000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        6976,
+        1024
+      ],
+      "id": "NODE_ID_BENUTZERDEFINIERTE_FELDER_ERKENNEN_VOLLTEXT_TEST_PLACEHOLDER",
+      "name": "Benutzerdefinierte Felder erkennen – Volltext TEST",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
     }
   ],
   "pinData": {},
@@ -692,7 +715,7 @@
       "main": [
         [
           {
-            "node": "Feldrelevante Textstellen vorfiltern",
+            "node": "Benutzerdefinierte Felder erkennen – Volltext TEST",
             "type": "main",
             "index": 0
           }
@@ -824,13 +847,7 @@
     },
     "Benutzerdefinierte Felder erkennen": {
       "main": [
-        [
-          {
-            "node": "Feldergebnis normalisieren",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Feldergebnis normalisieren": {
@@ -867,6 +884,17 @@
         [
           {
             "node": "Temporäre OCR-Dateien löschen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Benutzerdefinierte Felder erkennen – Volltext TEST": {
+      "main": [
+        [
+          {
+            "node": "Feldergebnis normalisieren",
             "type": "main",
             "index": 0
           }
